@@ -4,21 +4,21 @@
 namespace Pipas\Modules\DI;
 
 use Nette\DI\CompilerExtension;
-use Nette\DI\Helpers;
+use Nette\DI\ServiceDefinition;
 use Nette\DI\Statement;
 use Nette\FileNotFoundException;
 use Nette\Utils\AssertionException;
 use Nette\Utils\Validators;
 use Pipas\Modules\Configurators\LatteMacrosConfig;
+use Pipas\Modules\Configurators\MediaDirectoryConfig;
 use Pipas\Modules\Configurators\ParametersConfig;
 use Pipas\Modules\Configurators\PresenterMappingConfig;
-use Pipas\Modules\Configurators\TemplateHelpersConfig;
 use Pipas\Modules\Providers\ILatteMacrosProvider;
+use Pipas\Modules\Providers\IMediaDirectoryProvider;
 use Pipas\Modules\Providers\INeonProvider;
 use Pipas\Modules\Providers\IParametersProvider;
 use Pipas\Modules\Providers\IPresenterMappingProvider;
 use Pipas\Modules\Providers\IRouterProvider;
-use Pipas\Modules\Providers\ITemplateHelpersProvider;
 
 /**
  * This extension must be loaded before all ohers module extensions
@@ -43,8 +43,11 @@ class ModulesExtension extends CompilerExtension
 			if ($extension instanceof IPresenterMappingProvider) {
 				$this->setupPresenterMapping($extension);
 			}
-			if ($extension instanceof ILatteMacrosProvide) {
+			if ($extension instanceof ILatteMacrosProvider) {
 				$this->setupMacros($extension);
+			}
+			if ($extension instanceof IMediaDirectoryProvider) {
+				$this->setupMediaDirectory($extension);
 			}
 		}
 	}
@@ -67,7 +70,7 @@ class ModulesExtension extends CompilerExtension
 		Validators::assert($parameters, 'array');
 		$builder = $this->getContainerBuilder();
 		if (count($parameters) > 0) {
-			$builder->parameters = Helpers::merge($builder->expand($parameters), $builder->parameters);
+			$builder->parameters = \Nette\DI\Config\Helpers::merge($builder->expand($parameters), $builder->parameters);
 		}
 	}
 
@@ -167,6 +170,7 @@ class ModulesExtension extends CompilerExtension
 			}
 		}
 	}
+
 	/**
 	 * @param ILatteMacrosProvider $extension
 	 * @throws AssertionException
@@ -186,6 +190,38 @@ class ModulesExtension extends CompilerExtension
 			}
 			$latteFactory->addSetup('?->onCompile[] = function($engine) { ' . $macro . '($engine->getCompiler()); }', array('@self'));
 		}
+	}
+
+	/**
+	 * @return ServiceDefinition
+	 */
+	private function getLatteFactory()
+	{
+		$builder = $this->getContainerBuilder();
+		return $builder->hasDefinition('nette.latteFactory') ? $builder->getDefinition('nette.latteFactory') : $builder->getDefinition('nette.latte');
+	}
+
+	/**
+	 * @param IMediaDirectoryProvider $extension
+	 */
+	private function setupMediaDirectory(IMediaDirectoryProvider $extension)
+	{
+		$config = new MediaDirectoryConfig();
+		$extension->setupMediaDirectory($config);
+		$config->validate();
+
+		$www = $this->getContainerBuilder()->parameters['wwwDir'];
+		$media = $www . '/media';
+		if (!is_dir($media)) mkdir($media);
+
+		$module = $media . '/' . $config->getName();
+		if (!is_dir($module) AND !is_link($module)) {
+			symlink($config->getPath(), $module);
+
+			$htaccess = $config->getPath() . "/.htaccess";
+			if (!is_file($htaccess)) file_put_contents($htaccess, "Order Allow,Deny\nAllow from all");
+		}
+
 	}
 
 
