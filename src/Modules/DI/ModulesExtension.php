@@ -10,11 +10,9 @@ use Nette\FileNotFoundException;
 use Nette\Utils\AssertionException;
 use Nette\Utils\Validators;
 use Pipas\Modules\Configurators\LatteMacrosConfig;
-use Pipas\Modules\Configurators\MediaDirectoryConfig;
 use Pipas\Modules\Configurators\ParametersConfig;
 use Pipas\Modules\Configurators\PresenterMappingConfig;
 use Pipas\Modules\Providers\ILatteMacrosProvider;
-use Pipas\Modules\Providers\IMediaDirectoryProvider;
 use Pipas\Modules\Providers\INeonProvider;
 use Pipas\Modules\Providers\IParametersProvider;
 use Pipas\Modules\Providers\IPresenterMappingProvider;
@@ -45,9 +43,6 @@ class ModulesExtension extends CompilerExtension
 			}
 			if ($extension instanceof ILatteMacrosProvider) {
 				$this->setupMacros($extension);
-			}
-			if ($extension instanceof IMediaDirectoryProvider) {
-				$this->setupMediaDirectory($extension);
 			}
 		}
 	}
@@ -199,29 +194,6 @@ class ModulesExtension extends CompilerExtension
 	{
 		$builder = $this->getContainerBuilder();
 		return $builder->hasDefinition('nette.latteFactory') ? $builder->getDefinition('nette.latteFactory') : $builder->getDefinition('nette.latte');
-	}
-
-	/**
-	 * @param IMediaDirectoryProvider $extension
-	 */
-	private function setupMediaDirectory(IMediaDirectoryProvider $extension)
-	{
-		$config = new MediaDirectoryConfig();
-		$extension->setupMediaDirectory($config);
-		$config->validate();
-
-		$www = $this->getContainerBuilder()->parameters['wwwDir'];
-		$media = $www . '/media';
-		if (!is_dir($media)) mkdir($media);
-
-		$module = $media . '/' . $config->getName();
-		if (!is_dir($module) AND !is_link($module)) {
-			symlink($config->getPath(), $module);
-
-			$htaccess = $config->getPath() . "/.htaccess";
-			if (!is_file($htaccess)) file_put_contents($htaccess, "Order Allow,Deny\nAllow from all");
-		}
-
 	}
 
 
