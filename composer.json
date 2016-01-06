@@ -18,7 +18,8 @@
     "nette/di": "~2.3",
     "nette/utils": "~2.3",
     "php": ">=5.5.0",
-    "composer/composer": "~1.0@dev"
+    "composer/composer": "~1.0@dev",
+    "nette/application": "^2.3"
   },
   "require-dev": {
     "nette/tester": "~1.3",
