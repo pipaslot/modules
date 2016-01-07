@@ -14,6 +14,7 @@ use Pipas\Modules\Composer\Extra\MediaDirectory;
  */
 class EventReceiver
 {
+	private static $instance;
 	/** @var Bower */
 	private $bower;
 
@@ -60,7 +61,7 @@ class EventReceiver
 	 * Calls all extras
 	 * @param Event $event
 	 */
-	public function run(Event $event)
+	public function runEvent(Event $event)
 	{
 		$composer = $event->getComposer();
 
@@ -75,4 +76,18 @@ class EventReceiver
 		$this->getMediaDirectory()->createSymlinks();
 		$this->getMediaDirectory()->updateWebConfig();
 	}
+
+	protected function __construct()
+	{
+
+	}
+
+	public static function run(Event $event)
+	{
+		if (!self::$instance) {
+			self::$instance = new self();
+		}
+		self::$instance->runEvent($event);
+	}
+
 }

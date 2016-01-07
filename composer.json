@@ -34,7 +34,6 @@
   "extra": {
     "bower": {
       "files": [
-        "bower.json"
       ],
       "dependencies": {
         "pipaslot-frontend": "~1.0.0",
@@ -42,10 +41,8 @@
       }
     },
     "grunt": {
-      ".": ""
     },
     "media-directory": {
-      "name-of-dir": "private"
     }
   },
   "scripts": {

@@ -72,8 +72,6 @@ class MediaDirectory implements IExtra
 				$this->addLink($absolutePath, $module);
 			}
 		}
-		dump($this->rules);
-		echo $this->rules;
 	}
 
 	/**
