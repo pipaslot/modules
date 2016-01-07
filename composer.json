@@ -23,7 +23,8 @@
   },
   "require-dev": {
     "nette/tester": "~1.3",
-    "tracy/tracy": "^2.3"
+    "tracy/tracy": "^2.3",
+    "mockery/mockery": "^0.9.4"
   },
   "autoload": {
     "classmap": [
@@ -33,6 +34,7 @@
   "extra": {
     "bower": {
       "files": [
+        "bower.json"
       ],
       "dependencies": {
         "pipaslot-frontend": "~1.0.0",
@@ -40,18 +42,18 @@
       }
     },
     "grunt": {
-      "first/path": "",
-      "second/path": "custom-task"
+      ".": ""
     },
-    "media-directories": {
+    "media-directory": {
+      "name-of-dir": "private"
     }
   },
   "scripts": {
     "post-install-cmd": [
-      "Pipas\\Modules\\Composer\\Bower::installDependencies"
+      "Pipas\\Modules\\Composer\\EventReceiver::run"
     ],
     "post-update-cmd": [
-      "Pipas\\Modules\\Composer\\Bower::installDependencies"
+      "Pipas\\Modules\\Composer\\EventReceiver::run"
     ]
   }
 }

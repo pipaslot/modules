@@ -1,7 +1,7 @@
 <?php
-namespace Pipas\Modules\Composer;
+namespace Pipas\Modules\Composer\Extra;
 
-use Composer\Script\Event;
+use Composer\Package\PackageInterface;
 
 /**
  * Installation of grunt and NPM packages defined in composer.json config file
@@ -16,18 +16,14 @@ use Composer\Script\Event;
  *
  * @author Petr Štipek <p.stipek@email.cz>
  */
-class Grunt
+class Grunt implements IExtra
 {
-	/**
-	 * Run tasks defined into section extra: grunt: []
-	 * @param Event $event
-	 */
-	public static function run(Event $event)
+	function run(PackageInterface $package, $isMain = false)
 	{
-		$extra = $event->getComposer()->getPackage()->getExtra();
+		$extra = $package->getExtra();
 		if (isset($extra['grunt']) AND is_array($extra['grunt'])) {
 			foreach ($extra['grunt'] as $dir => $task) {
-				self::runTask($dir, $task);
+				$this->runTask($dir, $task);
 			}
 		}
 	}
@@ -37,7 +33,7 @@ class Grunt
 	 * @param string $directory Relative path
 	 * @param string $taskName
 	 */
-	public static function runTask($directory = "", $taskName = "")
+	public function runTask($directory = "", $taskName = "")
 	{
 		$path = getcwd() . "/" . trim($directory, "/\\");
 		passthru("cd $path & npm install & grunt $taskName");
