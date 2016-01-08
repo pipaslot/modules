@@ -31,11 +31,18 @@
 				</nav>
 			{/if}
 		{/ifset}
-		<div class="container" n:snippet="content">
+		<div n:snippet="content" class="container" role="main">
+
+			{ifset header}
+	            {include header}
+	        {/ifset}
 			<div class="flashMessages">
 				<div n:foreach="$flashes as $flash" n:class="alert, 'alert-'.$flash->type">{$flash->message|noescape}</div>
 			</div>
 			{include content}
+			{ifset footer}
+				{include footer}
+			{/ifset}
 		</div>
 		<script type="text/javascript" src="{$basePath}/media/bower_components/jquery/dist/jquery.min.js"></script>
 		<script type="text/javascript" src="{$basePath}/media/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
