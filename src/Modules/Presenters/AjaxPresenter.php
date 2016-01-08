@@ -24,6 +24,7 @@ abstract class AjaxPresenter extends Presenter
 			$this->redrawControl("styles");
 			$this->redrawControl("scripts");
 		}
+		$this->template->ajaxLayoutPath = __DIR__ . "/templates/@layout.latte";
 	}
 
 	/**
@@ -58,9 +59,8 @@ abstract class AjaxPresenter extends Presenter
 	 */
 	public function formatLayoutTemplateFiles()
 	{
-		$layout = $this->layout ? $this->layout : 'layout';
 		$list = parent::formatLayoutTemplateFiles();
-		$list[] = __DIR__ . "/templates/@$layout.latte";
+		$list[] = __DIR__ . "/templates/@layout.latte";
 		return $list;
 	}
 }
