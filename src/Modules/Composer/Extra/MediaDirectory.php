@@ -81,10 +81,10 @@ class MediaDirectory implements IExtra
 	 */
 	private function addRule($relativePath, $name)
 	{
-		$this->rules .= "<rule name=\"Rewrite media modules to $relativePath folder\" stopProcessing=\"true\">"
-			. "<match url=\"^" . $this->publicMediaPath . "/$name/(.+)\" ignoreCase=\"false\" />"
-			. "<action type=\"Rewrite\" url=\"$relativePath{R:1}\" />"
-			. "</rule>";
+		$this->rules .= "\n\t\t\t<rule name=\"Rewrite media modules to $relativePath folder\" stopProcessing=\"true\">"
+			. "\n\t\t\t\t<match url=\"^" . $this->publicMediaPath . "/$name/(.+)\" ignoreCase=\"false\" />"
+			. "\n\t\t\t\t<action type=\"Rewrite\" url=\"$relativePath{R:1}\" />"
+			. "\n\t\t\t</rule>";
 	}
 
 	/**
