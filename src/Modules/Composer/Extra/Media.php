@@ -43,9 +43,9 @@ class Media implements IExtra
 	function run(PackageInterface $package, $isMain = true)
 	{
 		$extra = $package->getExtra();
+		$this->initPaths($extra, $isMain);
 		if (!isset($extra['media']) OR !isset($extra['media']['directories']) OR !is_array($extra['media']['directories'])) return;
 
-		$this->initPaths($extra['media'], $isMain);
 		$vendorName = trim("vendor/" . $package->getName(), '\\/');
 
 		foreach ($extra['media']['directories'] as $name => $path) {
@@ -127,16 +127,16 @@ class Media implements IExtra
 
 	/**
 	 * Initialize paths from main package extra parameters
-	 * @param $media
+	 * @param $extra
 	 * @param $isMain
 	 */
-	private function initPaths($media, $isMain)
+	private function initPaths($extra, $isMain)
 	{
 		if ($this->wwwRoot AND $this->basePath AND $isMain) throw new \DomainException("Can not run for package marked as main twice.");
 		if ($this->wwwRoot AND $this->basePath) return;
 		if (!$isMain) throw new \DomainException("Call at first for main package");
-		$this->wwwRoot = (isset($media['www-root']) AND $isMain) ? trim($media['www-root'], "\\/") : 'www';
-		$this->basePath = (isset($media['base-path']) AND $isMain) ? trim($media['base-path'], "\\/") : 'media';
+		$this->wwwRoot = (isset($extra['media']['www-root']) AND $isMain) ? trim($extra['media']['www-root'], "\\/") : 'www';
+		$this->basePath = (isset($extra['media']['base-path']) AND $isMain) ? trim($extra['media']['base-path'], "\\/") : 'media';
 	}
 
 	/**

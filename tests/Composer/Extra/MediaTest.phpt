@@ -50,8 +50,8 @@ class MediaTest extends TestCase
 
 		$media = new Media();
 		$media->run($packageMock1);
-		$media->run($packageMock2);
-		$media->run($packageMock3);
+		$media->run($packageMock2, false);
+		$media->run($packageMock3, false);
 	}
 
 	function test_mainPackageIsNotRunAtFirst_run_Exception()
