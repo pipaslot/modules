@@ -10,7 +10,7 @@ use Tester\TestCase;
 
 require __DIR__ . '/../../bootstrap.php';
 
-class MediaDirectoryTest extends TestCase
+class MediaTest extends TestCase
 {
 	/** @var MockInterface[] */
 	private $packages;
@@ -44,11 +44,60 @@ class MediaDirectoryTest extends TestCase
 		$packageMock1 = $this->createPackageMock();
 		$packageMock1->shouldReceive("getExtra")->andReturn(array());
 		$packageMock2 = $this->createPackageMock();
-		$packageMock2->shouldReceive("getExtra")->andReturn(array("media-directory" => null));
+		$packageMock2->shouldReceive("getExtra")->andReturn(array("media" => null));
+		$packageMock3 = $this->createPackageMock();
+		$packageMock3->shouldReceive("getExtra")->andReturn(array("media" => array("directories" => null)));
 
-		$media = new MediaDirectory();
+		$media = new Media();
 		$media->run($packageMock1);
 		$media->run($packageMock2);
+		$media->run($packageMock3);
+	}
+
+	function test_mainPackageIsNotRunAtFirst_run_Exception()
+	{
+		$packageMock = $this->createPackageMock();
+		$packageMock
+			->shouldReceive("getExtra")
+			->andReturn(array(
+				"media" => array(
+					"directories" => array(
+						"name" => "existing"
+					)
+				)));
+		Assert::exception(function () use ($packageMock) {
+			$media = new Media();
+			$media->run($packageMock, false);
+		}, \DomainException::class);
+	}
+
+	function test_mainRunTwice_run_Exception()
+	{
+		$packageMock = $this->createPackageMock();
+		$packageMock
+			->shouldReceive("getExtra")
+			->andReturn(array(
+				"media" => array(
+					"www-root" => "existing",
+					"base-path" => "existing",
+					"directories" => array(
+						"name" => "existing"
+					)
+				)));
+		$packageMock
+			->shouldReceive("getName")
+			->andReturn("package/name");
+
+		//passing
+		$media2 = new Media();
+		$media2->run($packageMock);
+		$media2->run($packageMock, false);
+		//failing
+		Assert::exception(function () use ($packageMock) {
+			$media = new Media();
+			$media->run($packageMock);
+			$media->run($packageMock);
+		}, \DomainException::class);
 	}
 
 	function test_badMediaDirName_run_exception()
@@ -57,15 +106,17 @@ class MediaDirectoryTest extends TestCase
 		$packageMock
 			->shouldReceive("getExtra")
 			->andReturn(array(
-				"media-directory" => array(
-					"bad/name" => "existing"
+				"media" => array(
+					"directories" => array(
+						"bad/name" => "existing"
+					)
 				)));
 		$packageMock
 			->shouldReceive("getName")
 			->andReturn("package/name");
 
 		Assert::exception(function () use ($packageMock) {
-			$media = new MediaDirectory();
+			$media = new Media();
 			$media->run($packageMock);
 		}, \OutOfRangeException::class, "Name must be corresponding to expression: a-zA-Z0-9_-");
 	}
@@ -76,17 +127,19 @@ class MediaDirectoryTest extends TestCase
 		$packageMock
 			->shouldReceive("getExtra")
 			->andReturn(array(
-				"media-directory" => array(
-					"name" => "missing"
+				"media" => array(
+					"directories" => array(
+						"name" => "missing"
+					)
 				)));
 		$packageMock
 			->shouldReceive("getName")
 			->andReturn("package/name");
 
 		Assert::exception(function () use ($packageMock) {
-			$media = new MediaDirectory();
+			$media = new Media();
 			$media->run($packageMock);
-		}, \OutOfRangeException::class, "Media directory does not exist for expected path: " . getcwd() . "/www/media");
+		}, \OutOfRangeException::class, "Media directory does not exist for expected path: " . str_replace('\\', '/', getcwd() . "/www/media"));
 	}
 
 	function test_noMediaSourceDirectoryExist_run_exception()
@@ -95,17 +148,20 @@ class MediaDirectoryTest extends TestCase
 		$packageMock
 			->shouldReceive("getExtra")
 			->andReturn(array(
-				"media-directory" => array(
-					"name" => "missing"
+				"media" => array(
+					"base-path" => "existing",
+					"directories" => array(
+						"name" => "missing"
+					)
 				)));
 		$packageMock
 			->shouldReceive("getName")
 			->andReturn("package/name");
 
 		Assert::exception(function () use ($packageMock) {
-			$media = new MediaDirectory("www", "existing");
+			$media = new Media();
 			$media->run($packageMock);
-		}, \OutOfRangeException::class, "Directory declared by relative path: 'missing' does not exist on absolute path " . getcwd() . "/vendor/package/name/missing");
+		}, \OutOfRangeException::class, "Directory declared by relative path: 'missing' does not exist on absolute path " . str_replace('\\', '/', getcwd() . "/missing"));
 	}
 
 	function test_noMediaSourceDirectoryExistOnMain_run_exception()
@@ -114,17 +170,20 @@ class MediaDirectoryTest extends TestCase
 		$packageMock
 			->shouldReceive("getExtra")
 			->andReturn(array(
-				"media-directory" => array(
-					"name" => "missing"
+				"media" => array(
+					"base-path" => "existing",
+					"directories" => array(
+						"name" => "missing"
+					)
 				)));
 		$packageMock
 			->shouldReceive("getName")
 			->andReturn("package/name");
 
 		Assert::exception(function () use ($packageMock) {
-			$media = new MediaDirectory("www", "existing");
-			$media->run($packageMock, true);
-		}, \OutOfRangeException::class, "Directory declared by relative path: 'missing' does not exist on absolute path " . getcwd() . "/missing");
+			$media = new Media();
+			$media->run($packageMock);
+		}, \OutOfRangeException::class, "Directory declared by relative path: 'missing' does not exist on absolute path " . str_replace('\\', '/', getcwd() . "/missing"));
 	}
 
 	function test_run()
@@ -133,20 +192,23 @@ class MediaDirectoryTest extends TestCase
 		$packageMock
 			->shouldReceive("getExtra")
 			->andReturn(array(
-				"media-directory" => array(
-					"name" => "existing"
+				"media" => array(
+					"base-path" => "existing",
+					"directories" => array(
+						"name" => "existing"
+					)
 				)));
 		$packageMock
 			->shouldReceive("getName")
 			->andReturn("package/name");
 
-		$media = new MediaDirectory("www", "existing");
+		$media = new Media();
 		$media->run($packageMock);
 	}
 
 }
 
-$test = new MediaDirectoryTest();
+$test = new MediaTest();
 // system function mocks
 function is_dir($filename)
 {

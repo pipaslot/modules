@@ -45,7 +45,7 @@ class Bower implements IExtra
 		$this->installed[$flags] = true;
 	}
 
-	function run(PackageInterface $package, $isMain = false)
+	function run(PackageInterface $package, $isMain = true)
 	{
 		$extra = $package->getExtra();
 		if (!isset($extra['bower'])) return;

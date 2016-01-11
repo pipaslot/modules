@@ -42,7 +42,11 @@
     },
     "grunt": {
     },
-    "media-directory": {
+    "media": {
+      "www-root": "temp",
+      "base-path": "media",
+      "directories": {
+      }
     }
   },
   "scripts": {

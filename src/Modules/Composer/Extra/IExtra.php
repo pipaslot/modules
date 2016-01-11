@@ -15,5 +15,5 @@ interface IExtra
 	 * @param bool $isMain - Package is not as vendor dependency
 	 * @return
 	 */
-	function run(PackageInterface $package, $isMain = false);
+	function run(PackageInterface $package, $isMain = true);
 }

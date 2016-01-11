@@ -18,7 +18,7 @@ use Composer\Package\PackageInterface;
  */
 class Grunt implements IExtra
 {
-	function run(PackageInterface $package, $isMain = false)
+	function run(PackageInterface $package, $isMain = true)
 	{
 		$extra = $package->getExtra();
 		if (isset($extra['grunt']) AND is_array($extra['grunt'])) {
