@@ -37,7 +37,7 @@
       ],
       "dependencies": {
         "pipaslot-frontend": "~1.0.0",
-        "Nette-LiveFormValidation": "nette-live-validation#~1.0.0"
+        "nette-live-validation": "~1.0.0"
       }
     },
     "grunt": {
