@@ -6,7 +6,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="author" content="Petr Štipek, p.stipek@email.cz">
 
-		<title n:snippet="title">{ifset $title}{$title} | {/ifset} Integ-race</title>
+		<title n:snippet="title">{ifset $title}{$title}{/ifset}{if isset($projectName) AND isset($title)} | {/if}{ifset $projectName}{$projectName}{/ifset}</title>
 
 		<link rel="shortcut icon" href="{$basePath}/favicon.ico">
         <link rel="stylesheet" href="{$basePath}/media/bower_components/bootstrap/dist/css/bootstrap.min.css">
@@ -17,7 +17,6 @@
 	<body>
 		{snippet styles}
 		{block styles}
-		<link rel="stylesheet" property="stylesheet" href="{$basePath}/media/css/style.css">
 		{/block}
         {/snippet}
 
