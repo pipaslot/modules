@@ -2,6 +2,8 @@
 
 namespace Pipas\Modules\Configurators;
 
+use Nette\Application\IRouter;
+
 /**
  * @author Petr Štipek <p.stipek@email.cz>
  */
