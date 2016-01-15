@@ -1,0 +1,14 @@
+extensions:
+	modules: Pipas\Modules\DI\ModulesExtension
+
+application:
+	scanDirs: false
+
+modules:
+	layouts: [
+		{
+			path: 		%appDir%/@testLayout.latte
+			rules: 		[Admin:cosik],
+			nonsense: 	true
+		}
+	]

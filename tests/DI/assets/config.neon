@@ -1,0 +1,17 @@
+extensions:
+	modules: Pipas\Modules\DI\ModulesExtension
+
+application:
+	scanDirs: false
+
+di:
+	debugger: true
+
+modules:
+	layouts: [
+		{
+			path: 		%appDir%/assets/@testLayout.latte
+			rules: 		[ "*" ],
+			override: 	true
+		}
+	]

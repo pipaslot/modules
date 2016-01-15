@@ -14,6 +14,7 @@ class LayoutProviderTest extends TestCase
 	const LAYOUT_DEFAULT = "default";
 	const LAYOUT_APPEND = "append";
 	const LAYOUT_PREPEND = "prepend";
+	const LAYOUT_CUSTOM = "prepend";
 
 	public function setUp()
 	{
@@ -35,6 +36,26 @@ class LayoutProviderTest extends TestCase
 		}, \OutOfRangeException::class);
 	}
 
+	public function test_addDefinition()
+	{
+		$provider = new LayoutProvider(self::LAYOUT_DEFAULT);
+		Assert::equal(1, count($provider->prepareLayouts(array(), "name")));
+
+		$provider->addDefinition(self::LAYOUT_CUSTOM, true);
+
+		Assert::equal(2, count($provider->prepareLayouts(array(), "name")));
+	}
+
+	public function test_register()
+	{
+		$provider = new LayoutProvider(self::LAYOUT_DEFAULT);
+		Assert::equal(1, count($provider->prepareLayouts(array(), "name")));
+
+		$provider->register(self::LAYOUT_CUSTOM, array("*"), true);
+
+		Assert::equal(2, count($provider->prepareLayouts(array(), "name")));
+	}
+
 	public function test_formatLayoutTemplateFiles_default()
 	{
 		$fromPresenter = array();
@@ -51,7 +72,7 @@ class LayoutProviderTest extends TestCase
 		$fromPresenter = array("pathFromPresenter");
 		$expected = array_merge(array(self::LAYOUT_PREPEND), $fromPresenter, array(self::LAYOUT_DEFAULT));
 		$provider = new LayoutProvider(self::LAYOUT_DEFAULT);
-		$provider->register(self::LAYOUT_PREPEND, true);
+		$provider->addDefinition(self::LAYOUT_PREPEND, true);
 
 		$layouts = $provider->prepareLayouts($fromPresenter, "name");
 
@@ -64,7 +85,7 @@ class LayoutProviderTest extends TestCase
 		$expected = array_merge($fromPresenter, array(self::LAYOUT_APPEND), array(self::LAYOUT_DEFAULT));
 
 		$provider = new LayoutProvider(self::LAYOUT_DEFAULT);
-		$provider->register(self::LAYOUT_APPEND);
+		$provider->addDefinition(self::LAYOUT_APPEND);
 
 		$layouts = $provider->prepareLayouts($fromPresenter, "name");
 
@@ -78,8 +99,8 @@ class LayoutProviderTest extends TestCase
 		$expected = array_merge(array(self::LAYOUT_PREPEND), $fromPresenter, array(self::LAYOUT_DEFAULT));
 
 		$provider = new LayoutProvider(self::LAYOUT_DEFAULT);
-		$provider->register(self::LAYOUT_PREPEND, true);
-		$provider->register(self::LAYOUT_APPEND);
+		$provider->addDefinition(self::LAYOUT_PREPEND, true);
+		$provider->addDefinition(self::LAYOUT_APPEND);
 
 		$layouts = $provider->prepareLayouts($fromPresenter, "name");
 
@@ -89,7 +110,11 @@ class LayoutProviderTest extends TestCase
 
 function is_file($name)
 {
-	if ($name == LayoutProviderTest::LAYOUT_PREPEND OR $name == LayoutProviderTest::LAYOUT_APPEND OR $name == LayoutProviderTest::LAYOUT_DEFAULT) return true;
+	if ($name == LayoutProviderTest::LAYOUT_CUSTOM OR
+		$name == LayoutProviderTest::LAYOUT_PREPEND OR
+		$name == LayoutProviderTest::LAYOUT_APPEND OR
+		$name == LayoutProviderTest::LAYOUT_DEFAULT
+	) return true;
 	return \is_file($name);
 }
 

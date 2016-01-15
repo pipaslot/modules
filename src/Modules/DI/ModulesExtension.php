@@ -17,6 +17,7 @@ use Pipas\Modules\Providers\INeonProvider;
 use Pipas\Modules\Providers\IParametersProvider;
 use Pipas\Modules\Providers\IPresenterMappingProvider;
 use Pipas\Modules\Providers\IRouterProvider;
+use Pipas\Modules\Templates\LayoutProvider;
 
 /**
  * This extension must be loaded before all ohers module extensions
@@ -25,9 +26,13 @@ use Pipas\Modules\Providers\IRouterProvider;
 class ModulesExtension extends CompilerExtension
 {
 	const TAG_ROUTER = 'pipas.modules.router';
+	public $defaults = array(
+		"layouts" => array()
+	);
 
 	public function loadConfiguration()
 	{
+		$config = $this->getConfig($this->defaults);
 		foreach ($this->compiler->getExtensions() as $extension) {
 			if ($extension instanceof IParametersProvider) {
 				$this->setupParameters($extension);
@@ -45,6 +50,7 @@ class ModulesExtension extends CompilerExtension
 				$this->setupMacros($extension);
 			}
 		}
+		$this->setupLayoutProvider($config);
 	}
 
 	public function beforeCompile()
@@ -53,6 +59,28 @@ class ModulesExtension extends CompilerExtension
 		$this->addRouters();
 	}
 	/*********************** Setups ************************/
+	/**
+	 * Prepare service enabling change layout file on runtime
+	 */
+	private function setupLayoutProvider(array $config)
+	{
+		$enabledKeys = array("path", "rules", "override");
+		// register LayoutProvider
+		$container = $this->getContainerBuilder();
+		$provider = $container->addDefinition($this->prefix('layoutProvider'))
+			->setClass(LayoutProvider::class);
+		if (isset($config['layouts']) AND is_array($config['layouts'])) {
+			foreach ($config['layouts'] as $layout) {
+				if (!is_array($layout)) throw new \OutOfRangeException("Config section $this->name.layouts must contains array");
+				foreach ($layout as $name => $value) {
+					if (!in_array($name, $enabledKeys)) throw new \OutOfRangeException("Config section $this->name.layouts: expected parameter name one of [" . implode(", ", $enabledKeys) . "], but $name given.");
+				}
+				$provider->addSetup("register", array($layout['path'], $layout['rules'], $layout['override']));
+			}
+		}
+
+	}
+
 	/**
 	 * @param IParametersProvider $extension
 	 * @throws AssertionException
