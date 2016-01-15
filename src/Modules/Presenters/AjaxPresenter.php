@@ -3,6 +3,7 @@ namespace Pipas\Modules\Presenters;
 
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Presenter;
+use Pipas\Modules\Templates\LayoutProvider;
 
 /**
  * Providing AJAX operations and default snippet invalidation.
@@ -14,6 +15,17 @@ use Nette\Application\UI\Presenter;
  */
 abstract class AjaxPresenter extends Presenter
 {
+	/** @var LayoutProvider */
+	private $layoutProvider;
+
+	/**
+	 * @param LayoutProvider $layoutProvider
+	 */
+	public function injectLayoutProvider(LayoutProvider $layoutProvider)
+	{
+		$this->layoutProvider = $layoutProvider;
+	}
+
 	protected function beforeRender()
 	{
 		parent::beforeRender();
@@ -54,13 +66,11 @@ abstract class AjaxPresenter extends Presenter
 	}
 
 	/**
-	 * Search default layout ofAjaxPresenter
+	 * Search default layouts of AjaxPresenter
 	 * @return array
 	 */
 	public function formatLayoutTemplateFiles()
 	{
-		$list = parent::formatLayoutTemplateFiles();
-		$list[] = __DIR__ . "/templates/@layout.latte";
-		return $list;
+		return $this->layoutProvider->prepareLayouts(parent::formatLayoutTemplateFiles(), $this->name);
 	}
 }
