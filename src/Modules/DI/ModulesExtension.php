@@ -75,7 +75,10 @@ class ModulesExtension extends CompilerExtension
 				foreach ($layout as $name => $value) {
 					if (!in_array($name, $enabledKeys)) throw new \OutOfRangeException("Config section $this->name.layouts: expected parameter name one of [" . implode(", ", $enabledKeys) . "], but $name given.");
 				}
-				$provider->addSetup("register", array($layout['path'], $layout['rules'], $layout['override']));
+				if (!isset($layout['path'])) throw new \OutOfRangeException("Config section $this->name.layouts item must contain property 'path'.");
+				$rules = isset($layout['rules']) ? $layout['rules'] : array();
+				$override = isset($layout['override']) ? $layout['override'] : false;
+				$provider->addSetup("register", array($layout['path'], $rules, $override));
 			}
 		}
 

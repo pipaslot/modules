@@ -1,0 +1,13 @@
+extensions:
+	modules: Pipas\Modules\DI\ModulesExtension
+
+application:
+	scanDirs: false
+
+modules:
+	layouts: [
+		{
+			rules: 		[ "*" ],
+			override: 	true
+		}
+	]
