@@ -5,6 +5,7 @@ namespace Pipas\Modules\Composer;
 
 use Composer\Script\Event;
 use Pipas\Modules\Composer\Extra\Bower;
+use Pipas\Modules\Composer\Extra\Directory;
 use Pipas\Modules\Composer\Extra\Grunt;
 use Pipas\Modules\Composer\Extra\Media;
 
@@ -22,7 +23,10 @@ class EventReceiver
 	private $grunt;
 
 	/** @var Media */
-	private $mediaDirectory;
+	private $media;
+
+	/** @var Directory */
+	private $directory;
 
 	/**
 	 * @return Bower
@@ -49,12 +53,23 @@ class EventReceiver
 	/**
 	 * @return Media
 	 */
-	public function getMediaDirectory()
+	public function getMedia()
 	{
-		if (!$this->mediaDirectory) {
-			$this->mediaDirectory = new Media();
+		if (!$this->media) {
+			$this->media = new Media();
 		}
-		return $this->mediaDirectory;
+		return $this->media;
+	}
+
+	/**
+	 * @return Directory
+	 */
+	public function getDirectory()
+	{
+		if (!$this->directory) {
+			$this->directory = new Directory();
+		}
+		return $this->directory;
 	}
 
 	/**
@@ -65,16 +80,16 @@ class EventReceiver
 	{
 		$composer = $event->getComposer();
 
+		$this->getDirectory()->run($composer->getPackage());
 		$this->getBower()->run($composer->getPackage());
 		$this->getGrunt()->run($composer->getPackage());
-		$this->getMediaDirectory()->run($composer->getPackage());
+		$this->getMedia()->run($composer->getPackage());
 		foreach ($composer->getRepositoryManager()->getLocalRepository()->getPackages() as $package) {
 			$this->getBower()->run($package, false);
 			$this->getGrunt()->run($package, false);
-			$this->getMediaDirectory()->run($package, false);
+			$this->getMedia()->run($package, false);
 		}
-		$this->getMediaDirectory()->createSymlinks();
-		$this->getMediaDirectory()->updateWebConfig();
+		$this->getMedia()->writeConfiguration();
 	}
 
 	protected function __construct()

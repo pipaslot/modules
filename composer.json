@@ -19,7 +19,8 @@
     "nette/utils": "~2.3",
     "php": ">=5.5.0",
     "composer/composer": "~1.0@dev",
-    "nette/application": "^2.3"
+    "nette/application": "^2.3",
+    "pipaslot/utils": "^1.1"
   },
   "require-dev": {
     "nette/tester": "~1.3",
@@ -33,6 +34,14 @@
     ]
   },
   "extra": {
+    "directory": {
+      "create": [
+        "temp"
+      ],
+      "clean": [
+        "temp"
+      ]
+    },
     "bower": {
       "files": [
       ],
