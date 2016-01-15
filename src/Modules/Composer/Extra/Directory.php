@@ -84,17 +84,14 @@ class Directory implements IExtra
 
 	private function runSecure(array $directories)
 	{
-		$isIIS = $this->isIis();
 		foreach ($directories as $directory) {
 			if (!is_dir($directory)) continue;
 			$path = $this->getPath($directory);
-			if ($isIIS) {
-				$config = $path . "/web.config";
-				if (!is_file($config)) file_put_contents($config, $this->webConfigDeny);
-			} else {
-				$htaccess = $path . "/.htaccess";
-				if (!is_file($htaccess)) file_put_contents($htaccess, $this->htaccessDeny);
-			}
+			$config = $path . "/web.config";
+			if (!is_file($config)) file_put_contents($config, $this->webConfigDeny);
+
+			$htaccess = $path . "/.htaccess";
+			if (!is_file($htaccess)) file_put_contents($htaccess, $this->htaccessDeny);
 		}
 	}
 
@@ -105,15 +102,6 @@ class Directory implements IExtra
 	private function getPath($directory)
 	{
 		return getcwd() . "/" . trim($directory, "\\/");
-	}
-
-	/**
-	 * Detect IIS server
-	 * @return bool
-	 */
-	private function isIis()
-	{
-		return strpos(strtolower($_SERVER["SERVER_SOFTWARE"]), "microsoft-iis") !== false ? true : false;
 	}
 
 }

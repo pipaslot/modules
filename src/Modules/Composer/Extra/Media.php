@@ -2,6 +2,7 @@
 namespace Pipas\Modules\Composer\Extra;
 
 use Composer\Package\PackageInterface;
+use Pipas\Utils\Path;
 
 /**
  * Tool accessing private directories with front-end libraries of modules
@@ -22,6 +23,8 @@ use Composer\Package\PackageInterface;
  */
 class Media implements IExtra
 {
+	/** @var string Relative path to IIS web.config file */
+	public $webConfigPath = "web.config";
 	/** @var string Relative path to www root from directory with composer.json */
 	private $wwwRoot;
 	/** @var string Path to media directory from URL */
@@ -35,7 +38,7 @@ class Media implements IExtra
 
 
 	/**
-	 * Prepare rules and sym links address. After all packages is ran is required to cal method updateWebConfig() or createSymlinks()
+	 * Prepare rules and sym links address. After all packages is ran is required to cal method writeConfiguration()
 	 * @param PackageInterface $package
 	 * @param bool $isMain
 	 * @return string|void
@@ -52,9 +55,9 @@ class Media implements IExtra
 			if (!preg_match("/^[a-zA-Z0-9_-]+$/", $name)) throw new \OutOfRangeException("Name must be corresponding to expression: a-zA-Z0-9_-");
 			//generate create config
 			$relativePath = "/" . ($isMain ? "" : $vendorName . '/') . trim($path, '\\/');
-			$absolutePath = $this->normalize(getcwd() . $relativePath);
+			$absolutePath = Path::normalize(getcwd() . $relativePath);
 
-			$absoluteMediaPath = $this->normalize(getcwd() . '/' . trim($this->wwwRoot . '/' . $this->basePath, "\\/"));
+			$absoluteMediaPath = Path::normalize(getcwd() . '/' . trim($this->wwwRoot . '/' . $this->basePath, "\\/"));
 
 			if (!is_dir($absoluteMediaPath)) throw new \OutOfRangeException("Media directory does not exist for expected path: $absoluteMediaPath");
 			if (!is_dir($absolutePath)) throw new \OutOfRangeException("Directory declared by relative path: '$path' does not exist on absolute path $absolutePath");
@@ -91,15 +94,20 @@ class Media implements IExtra
 		$this->links[$absolutePath] = $module;
 	}
 
+	public function writeConfiguration()
+	{
+		$this->updateWebConfig();
+		$this->createSymlinks();
+	}
+
 	/**
 	 * Apply redirection rules for IIS to file web.config
-	 * @param string $relativePath
 	 */
-	public function updateWebConfig($relativePath = "web.config")
+	private function updateWebConfig()
 	{
-		$webConfigPath = getcwd() . '/' . trim($relativePath, "\\/");
+		$webConfigPath = getcwd() . '/' . trim($this->webConfigPath, "\\/");
 		if (!is_file($webConfigPath)) {
-			echo "IIS $relativePath file not found on path: $webConfigPath";
+			echo "IIS $this->webConfigPath file not found on path: $webConfigPath";
 			return;
 		}
 
@@ -116,7 +124,7 @@ class Media implements IExtra
 	/**
 	 * Create symlinks from public to private directories
 	 */
-	public function createSymlinks()
+	private function createSymlinks()
 	{
 		foreach ($this->links as $absolutePath => $module) {
 			if (!@symlink($absolutePath, $module)) echo "Symlink was not created. Run command again with privileges of administrator\n";
@@ -139,24 +147,5 @@ class Media implements IExtra
 		$this->basePath = (isset($extra['media']['base-path']) AND $isMain) ? trim($extra['media']['base-path'], "\\/") : 'media';
 	}
 
-	/**
-	 * Normalize path
-	 * @param $path
-	 * @return string
-	 */
-	private function normalize($path)
-	{
-		$path = str_replace('\\', '/', $path);
-		$exp = explode('/', $path);
-		$valid = array();
-		foreach ($exp as $i => $val) {
-			if ($val === "..") {
-				array_pop($valid);
-			} else if ($val !== ".") {
-				array_push($valid, $val);
-			}
-		}
-		return rtrim(implode('/', $valid), '/');
 
-	}
 }

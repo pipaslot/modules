@@ -5,6 +5,7 @@ use Composer\Package\PackageInterface;
 use Mockery;
 use Mockery\MockInterface;
 use Nette\Utils\Strings;
+use Pipas\Utils\Path;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -139,7 +140,7 @@ class MediaTest extends TestCase
 		Assert::exception(function () use ($packageMock) {
 			$media = new Media();
 			$media->run($packageMock);
-		}, \OutOfRangeException::class, "Media directory does not exist for expected path: " . str_replace('\\', '/', getcwd() . "/www/media"));
+		}, \OutOfRangeException::class, "Media directory does not exist for expected path: " . Path::normalize(getcwd() . "/www/media"));
 	}
 
 	function test_noMediaSourceDirectoryExist_run_exception()
@@ -161,7 +162,7 @@ class MediaTest extends TestCase
 		Assert::exception(function () use ($packageMock) {
 			$media = new Media();
 			$media->run($packageMock);
-		}, \OutOfRangeException::class, "Directory declared by relative path: 'missing' does not exist on absolute path " . str_replace('\\', '/', getcwd() . "/missing"));
+		}, \OutOfRangeException::class, "Directory declared by relative path: 'missing' does not exist on absolute path " . Path::normalize(getcwd() . "/missing"));
 	}
 
 	function test_noMediaSourceDirectoryExistOnMain_run_exception()
@@ -183,7 +184,7 @@ class MediaTest extends TestCase
 		Assert::exception(function () use ($packageMock) {
 			$media = new Media();
 			$media->run($packageMock);
-		}, \OutOfRangeException::class, "Directory declared by relative path: 'missing' does not exist on absolute path " . str_replace('\\', '/', getcwd() . "/missing"));
+		}, \OutOfRangeException::class, "Directory declared by relative path: 'missing' does not exist on absolute path " . Path::normalize(getcwd() . "/missing"));
 	}
 
 	function test_run()
