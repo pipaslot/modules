@@ -46,8 +46,8 @@
       "files": [
       ],
       "dependencies": {
-        "pipaslot-frontend": "~1.0",
-        "nette-live-form-validation": "~1.6"
+        "pipaslot-frontend": "~1.*",
+        "nette-live-form-validation": "~1.*"
       }
     },
     "grunt": {
