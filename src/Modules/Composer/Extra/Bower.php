@@ -58,13 +58,14 @@ class Bower implements IExtra
 		if (isset($extra['bower']['files']) AND is_array($extra['bower']['files'])) {
 			foreach ($extra['bower']['files'] as $file) {
 				$path = getcwd() . "/" . $file;
-				if (!is_file($path) AND $isMain) throw new \OutOfRangeException("File $file defined in composer section extra.bower.files does not exist on path: $path");
-				$bower = json_decode(file_get_contents($path));
-				if (isset($bower->dependencies)) {
-					foreach ($bower->dependencies as $package => $version) {
-						$this->installPackage($package, $version);
+				if (is_file($path)) {
+					$bower = json_decode(file_get_contents($path));
+					if (isset($bower->dependencies)) {
+						foreach ($bower->dependencies as $package => $version) {
+							$this->installPackage($package, $version);
+						}
 					}
-				}
+				} elseif ($isMain) throw new \OutOfRangeException("File $file defined in composer section extra.bower.files does not exist on path: $path");
 			}
 		}
 	}
