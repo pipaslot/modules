@@ -39,6 +39,7 @@ class Media implements IExtra
 	private $wwwRoot;
 	/** @var string Path to media directory from URL */
 	private $basePath;
+	private $ignored = array();
 
 	private $rules = "";
 	private $links = array();
@@ -64,9 +65,8 @@ class Media implements IExtra
 		}
 
 		$vendorName = trim("vendor/" . $package->getName(), '\\/');
-		$ignored = isset($extra['media']['ignored']) ? (array)$extra['media']['ignored'] : array();
 		foreach ($extra['media']['directories'] as $name => $path) {
-			if (in_array($name, $ignored)) continue;
+			if (in_array($name, $this->ignored)) continue;
 
 			if (!preg_match("/^[a-zA-Z0-9_-]+$/", $name)) throw new \OutOfRangeException("Name must be corresponding to expression: a-zA-Z0-9_-");
 			//generate create config
@@ -162,6 +162,7 @@ class Media implements IExtra
 		if (!$isMain) throw new \DomainException("Call at first for main package");
 		$this->wwwRoot = (isset($extra['media']['www-root']) AND $isMain) ? trim($extra['media']['www-root'], "\\/") : 'www';
 		$this->basePath = (isset($extra['media']['base-path']) AND $isMain) ? trim($extra['media']['base-path'], "\\/") : 'media';
+		$this->ignored = isset($extra['media']['ignored']) ? (array)$extra['media']['ignored'] : array();
 	}
 
 
