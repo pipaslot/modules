@@ -9,6 +9,10 @@ use Pipas\Utils\Path;
  *
  * Example of using:
  * "media": {
+ *    "web.config": {
+ *        "source": "relative path",
+ *        "target: "relative path",
+ *    }
  *    "www-root": "temp",    //relative path to www-root
  *    "base-path": "media",    //path from www-root to media directory
  *    "directories":{
@@ -26,8 +30,11 @@ use Pipas\Utils\Path;
  */
 class Media implements IExtra
 {
-	/** @var string Relative path to IIS web.config file */
-	public $webConfigPath = "web.config";
+	const WEB_CONFIG = "web.config";
+	/** @var string Relative path to IIS web.config file, which will be modified */
+	protected $webConfigTarget = self::WEB_CONFIG;
+	/** @var string Source web config for modification */
+	protected $webConfigSource = self::WEB_CONFIG;
 	/** @var string Relative path to www root from directory with composer.json */
 	private $wwwRoot;
 	/** @var string Path to media directory from URL */
@@ -51,6 +58,10 @@ class Media implements IExtra
 		$extra = $package->getExtra();
 		$this->initPaths($extra, $isMain);
 		if (!isset($extra['media']) OR !isset($extra['media']['directories']) OR !is_array($extra['media']['directories'])) return;
+		if ($isMain and isset($extra['media']['web.config'])) {
+			$this->webConfigTarget = isset($extra['media']['web.config']['target']) ? $extra['media']['web.config']['target'] : self::WEB_CONFIG;
+			$this->webConfigSource = isset($extra['media']['web.config']['source']) ? $extra['media']['web.config']['source'] : $this->webConfigTarget;
+		}
 
 		$vendorName = trim("vendor/" . $package->getName(), '\\/');
 		$ignored = isset($extra['media']['ignored']) ? (array)$extra['media']['ignored'] : array();
@@ -110,20 +121,21 @@ class Media implements IExtra
 	 */
 	private function updateWebConfig()
 	{
-		$webConfigPath = getcwd() . '/' . trim($this->webConfigPath, "\\/");
-		if (!is_file($webConfigPath)) {
-			echo "IIS $this->webConfigPath file not found on path: $webConfigPath";
+		$source = getcwd() . '/' . trim($this->webConfigSource, "\\/");
+		$target = getcwd() . '/' . trim($this->webConfigTarget, "\\/");
+
+		if (!is_file($source)) {
 			return;
 		}
 
-		$content = file_get_contents($webConfigPath);
+		$content = file_get_contents($source);
 		$tagStart = strpos($content, self::WEB_CONFIG_START_TAG) + strlen(self::WEB_CONFIG_START_TAG);
 		$tagEnd = strpos($content, self::WEB_CONFIG_END_TAG);
 		$newContent = substr($content, 0, $tagStart)
 			. $this->rules
 			. "\n\t\t\t" . substr($content, $tagEnd, strlen($content) - $tagEnd);
-		file_put_contents($webConfigPath, $newContent);
-		echo "Updated web config file: $webConfigPath\n";
+		file_put_contents($target, $newContent);
+		echo "Updated web config file: $this->webConfigSource\n";
 	}
 
 	/**
