@@ -13,7 +13,10 @@ use Pipas\Utils\Path;
  *    "base-path": "media",    //path from www-root to media directory
  *    "directories":{
  *        "name-under-public-media-directory": "relative/path/to/private/media/directory"
- *    }
+ *    },
+ *    "ignored":[
+ *        "ignored-media-directory-of-parent-modules"
+ *    ]
  * }
  *
  * For Unix will be created symlink to private directory.
@@ -50,8 +53,10 @@ class Media implements IExtra
 		if (!isset($extra['media']) OR !isset($extra['media']['directories']) OR !is_array($extra['media']['directories'])) return;
 
 		$vendorName = trim("vendor/" . $package->getName(), '\\/');
-
+		$ignored = isset($extra['media']['ignored']) ? (array)$extra['media']['ignored'] : array();
 		foreach ($extra['media']['directories'] as $name => $path) {
+			if (in_array($name, $ignored)) continue;
+
 			if (!preg_match("/^[a-zA-Z0-9_-]+$/", $name)) throw new \OutOfRangeException("Name must be corresponding to expression: a-zA-Z0-9_-");
 			//generate create config
 			$relativePath = "/" . ($isMain ? "" : $vendorName . '/') . trim($path, '\\/');

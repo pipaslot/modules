@@ -56,7 +56,9 @@
       "www-root": "temp",
       "base-path": "media",
       "directories": {
-      }
+      },
+      "ignored": [
+      ]
     }
   },
   "scripts": {
