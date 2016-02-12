@@ -135,7 +135,7 @@ class Media implements IExtra
 			. $this->rules
 			. "\n\t\t\t" . substr($content, $tagEnd, strlen($content) - $tagEnd);
 		file_put_contents($target, $newContent);
-		echo "Updated web config file: $this->webConfigSource\n";
+		echo "Updated web config file: $this->webConfigTarget\n";
 	}
 
 	/**
