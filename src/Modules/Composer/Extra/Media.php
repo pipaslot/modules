@@ -161,7 +161,7 @@ class Media implements IExtra
 		if ($this->wwwRoot AND $this->basePath) return;
 		if (!$isMain) throw new \DomainException("Call at first for main package");
 		$this->wwwRoot = (isset($extra['media']['www-root']) AND $isMain) ? trim($extra['media']['www-root'], "\\/") : 'www';
-		$this->basePath = (isset($extra['media']['base-path']) AND $isMain) ? trim($extra['media']['base-path'], "\\/") : 'media';
+		$this->basePath = (isset($extra['media']['base-path']) AND $isMain) ? trim($extra['media']['base-path'], "\\/") : 'media_modules';
 		$this->ignored = isset($extra['media']['ignored']) ? (array)$extra['media']['ignored'] : array();
 	}
 
