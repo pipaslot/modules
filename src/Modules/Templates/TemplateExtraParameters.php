@@ -13,7 +13,7 @@ class TemplateExtraParameters
 	/** @var string */
 	private $mediaDir;
 	/** @var string */
-	private $modulesDir;
+	private $moduleDir;
 
 	/**
 	 * Bower component directory name or path from wwww root
@@ -42,9 +42,9 @@ class TemplateExtraParameters
 	 * @param string $modulesDir
 	 * @return $this
 	 */
-	public function setModulesDir($modulesDir)
+	public function setModuleDir($modulesDir)
 	{
-		$this->modulesDir = $modulesDir;
+		$this->moduleDir = $modulesDir;
 		return $this;
 	}
 
@@ -72,7 +72,7 @@ class TemplateExtraParameters
 	 */
 	public function getModulePath($basePath)
 	{
-		return $this->concat($basePath, $this->modulesDir);
+		return $this->concat($basePath, $this->moduleDir);
 	}
 
 	/**

@@ -31,7 +31,7 @@ class ModulesExtension extends CompilerExtension
 		"layouts" => array(),
 		"bowerDir" => "bower_components",
 		"mediaDir" => "media",
-		"modulesDir" => "media_modules"
+		"moduleDir" => "media_modules"
 	);
 
 	public function loadConfiguration()
@@ -240,8 +240,8 @@ class ModulesExtension extends CompilerExtension
 		if (isset($config['mediaDir'])) {
 			$provider->addSetup("setMediaDir", array($config['mediaDir']));
 		}
-		if (isset($config['modulesDir'])) {
-			$provider->addSetup("setModulesDir", array($config['modulesDir']));
+		if (isset($config['moduleDir'])) {
+			$provider->addSetup("setModuleDir", array($config['moduleDir']));
 		}
 	}
 
