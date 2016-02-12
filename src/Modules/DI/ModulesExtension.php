@@ -18,6 +18,7 @@ use Pipas\Modules\Providers\IParametersProvider;
 use Pipas\Modules\Providers\IPresenterMappingProvider;
 use Pipas\Modules\Providers\IRouterProvider;
 use Pipas\Modules\Templates\LayoutProvider;
+use Pipas\Modules\Templates\TemplateExtraParameters;
 
 /**
  * This extension must be loaded before all ohers module extensions
@@ -27,7 +28,10 @@ class ModulesExtension extends CompilerExtension
 {
 	const TAG_ROUTER = 'pipas.modules.router';
 	public $defaults = array(
-		"layouts" => array()
+		"layouts" => array(),
+		"bowerDir" => "bower_components",
+		"mediaDir" => "media",
+		"modulesDir" => "media_modules"
 	);
 
 	public function loadConfiguration()
@@ -51,6 +55,7 @@ class ModulesExtension extends CompilerExtension
 			}
 		}
 		$this->setupLayoutProvider($config);
+		$this->setupTemplateParameters($config);
 	}
 
 	public function beforeCompile()
@@ -61,6 +66,7 @@ class ModulesExtension extends CompilerExtension
 	/*********************** Setups ************************/
 	/**
 	 * Prepare service enabling change layout file on runtime
+	 * @param array $config
 	 */
 	private function setupLayoutProvider(array $config)
 	{
@@ -215,6 +221,27 @@ class ModulesExtension extends CompilerExtension
 				Validators::assert($macro, 'callable', 'macro');
 			}
 			$latteFactory->addSetup('?->onCompile[] = function($engine) { ' . $macro . '($engine->getCompiler()); }', array('@self'));
+		}
+	}
+
+	/**
+	 * Register object with parameters for templates
+	 * @param array $config
+	 */
+	private function setupTemplateParameters(array $config)
+	{
+		$container = $this->getContainerBuilder();
+		$provider = $container->addDefinition($this->prefix('templateExtraParameters'))
+			->setClass(TemplateExtraParameters::class);
+
+		if (isset($config['bowerDir'])) {
+			$provider->addSetup("setBowerDir", array($config['bowerDir']));
+		}
+		if (isset($config['mediaDir'])) {
+			$provider->addSetup("setMediaDir", array($config['mediaDir']));
+		}
+		if (isset($config['modulesDir'])) {
+			$provider->addSetup("setModulesDir", array($config['modulesDir']));
 		}
 	}
 

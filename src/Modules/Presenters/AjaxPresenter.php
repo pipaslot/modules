@@ -2,8 +2,10 @@
 namespace Pipas\Modules\Presenters;
 
 use Nette\Application\BadRequestException;
+use Nette\Application\UI\ITemplate;
 use Nette\Application\UI\Presenter;
 use Pipas\Modules\Templates\LayoutProvider;
+use Pipas\Modules\Templates\TemplateExtraParameters;
 
 /**
  * Providing AJAX operations and default snippet invalidation.
@@ -18,12 +20,23 @@ abstract class AjaxPresenter extends Presenter
 	/** @var LayoutProvider */
 	private $layoutProvider;
 
+	/** @var TemplateExtraParameters */
+	private $templateParameters;
+
 	/**
 	 * @param LayoutProvider $layoutProvider
 	 */
 	public function injectLayoutProvider(LayoutProvider $layoutProvider)
 	{
 		$this->layoutProvider = $layoutProvider;
+	}
+
+	/**
+	 * @param TemplateExtraParameters $templateParameters
+	 */
+	public function injectTemplateExtraParameters(TemplateExtraParameters $templateParameters)
+	{
+		$this->templateParameters = $templateParameters;
 	}
 
 	protected function beforeRender()
@@ -64,6 +77,19 @@ abstract class AjaxPresenter extends Presenter
 				throw $e;
 		}
 	}
+
+	/**
+	 * @return ITemplate
+	 */
+	protected function createTemplate()
+	{
+		$template = parent::createTemplate();
+		$template->bowerPath = $this->templateParameters->getBowerPath($template->basePath);
+		$template->mediaPath = $this->templateParameters->getMediaPath($template->basePath);
+		$template->modulePath = $this->templateParameters->getModulePath($template->basePath);
+		return $template;
+	}
+
 
 	/**
 	 * Search default layouts of AjaxPresenter

@@ -9,10 +9,10 @@
 		<title n:snippet="title">{ifset $title}{$title}{/ifset}{if isset($projectName) AND isset($title)} | {/if}{ifset $projectName}{$projectName}{/ifset}</title>
 
 		<link rel="shortcut icon" href="{$basePath}/favicon.ico">
-        <link rel="stylesheet" href="{$basePath}/media/bower_components/bootstrap/dist/css/bootstrap.min.css">
-        <link rel="stylesheet" href="{$basePath}/media/bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
-        <link rel="stylesheet" href="{$basePath}/media/bower_components/pipaslot-frontend/dist/nette.css">
-        <link rel="stylesheet" href="{$basePath}/media/bower_components/pipaslot-frontend/dist/pipas.css">
+        <link rel="stylesheet" href="{$bowerPath}/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="{$bowerPath}/bootstrap/dist/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="{$bowerPath}/pipaslot-frontend/dist/nette.css">
+        <link rel="stylesheet" href="{$bowerPath}/pipaslot-frontend/dist/pipas.css">
     </head>
 	<body>
 		{snippet styles}
@@ -43,16 +43,16 @@
 				{include footer}
 			{/ifset}
 		</div>
-		<script type="text/javascript" src="{$basePath}/media/bower_components/jquery/dist/jquery.min.js"></script>
-		<script type="text/javascript" src="{$basePath}/media/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-	    <script type="text/javascript" src="{$basePath}/media/bower_components/nette-live-form-validation/live-form-validation.js"></script>
-	    <script type="text/javascript" src="{$basePath}/media/bower_components/nette.ajax.js/nette.ajax.js"></script>
-	    <script type="text/javascript" src="{$basePath}/media/bower_components/pipaslot-frontend/dist/pipas.js"></script>
-	    <script type="text/javascript" src="{$basePath}/media/bower_components/pipaslot-frontend/dist/nette-extensions.js"></script>
+		<script type="text/javascript" src="{$bowerPath}/jquery/dist/jquery.min.js"></script>
+		<script type="text/javascript" src="{$bowerPath}/bootstrap/dist/js/bootstrap.min.js"></script>
+	    <script type="text/javascript" src="{$bowerPath}/nette-live-form-validation/live-form-validation.js"></script>
+	    <script type="text/javascript" src="{$bowerPath}/nette.ajax.js/nette.ajax.js"></script>
+	    <script type="text/javascript" src="{$bowerPath}/pipaslot-frontend/dist/pipas.js"></script>
+	    <script type="text/javascript" src="{$bowerPath}/pipaslot-frontend/dist/nette-extensions.js"></script>
 		{snippet scripts}
 	    {block scripts}
 		{/block}
 		{/snippet}
-	    <script type="text/javascript" src="{$basePath}/media/bower_components/pipaslot-frontend/dist/nette-init.js"></script>
+	    <script type="text/javascript" src="{$bowerPath}/pipaslot-frontend/dist/nette-init.js"></script>
 	</body>
 </html>
