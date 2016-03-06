@@ -42,14 +42,19 @@ abstract class AjaxPresenter extends Presenter
 	protected function beforeRender()
 	{
 		parent::beforeRender();
+		$this->template->ajaxLayoutPath = __DIR__ . "/../Templates/@layout.latte";
+	}
+
+	protected function afterRender()
+	{
+		parent::afterRender();
 		//If is ajax mode and all components are valid, invalidate default pro prevent sending pure html instead of JSON response
-		if ($this->isAjax() AND !$this->isControlInvalid()) {
+		if ($this->isAjax() AND !$this->isControlInvalid() AND $this->layout != false) {
 			$this->redrawControl("title");
 			$this->redrawControl("content");
 			$this->redrawControl("styles");
 			$this->redrawControl("scripts");
 		}
-		$this->template->ajaxLayoutPath = __DIR__ . "/../Templates/@layout.latte";
 	}
 
 	/**
@@ -61,7 +66,7 @@ abstract class AjaxPresenter extends Presenter
 		$signal = $this->getSignal();
 
 		// If is not exist signal or is not Ajax
-		if (!$signal OR empty($signal[0]) OR !$this->isAjax()) {
+		if ((!$signal OR empty($signal[0]) OR !$this->isAjax()) AND $this->layout != false) {
 			$this->redrawControl("title");
 			$this->redrawControl("content");
 			$this->redrawControl("styles");
