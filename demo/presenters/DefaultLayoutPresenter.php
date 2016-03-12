@@ -22,7 +22,10 @@ class DefaultLayoutPresenter extends AjaxPresenter
 		};
 		$form->addSubmit("sendAndClose", "Save and close")
 			->onClick[] = function () {
-			$this->flashMessage("Saved", "success");
+			$this->flashMessage("Success", "success");
+			$this->flashMessage("Error", "error");
+			$this->flashMessage("Warning", "warning");
+			$this->flashMessage("Info", "info");
 			$this->modal->close();
 		};
 

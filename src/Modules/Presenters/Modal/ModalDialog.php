@@ -51,6 +51,7 @@ class ModalDialog
 	{
 		$id = $this->presenter->getParameterId('flash');
 		$messages = $this->presenter->getFlashSession()->$id;
+		if (!$messages OR !is_array($messages)) return;
 		$payload = $this->presenter->payload;
 		$payload->messageInfo = [];
 		$payload->messageError = [];
