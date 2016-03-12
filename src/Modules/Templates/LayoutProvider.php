@@ -32,6 +32,8 @@ class LayoutProvider
 		if ($default !== null) {
 			if (!is_file($default)) throw new \OutOfRangeException("Layout file odes not exist: " . $default);
 			$this->default = $default;
+		} else {
+			$this->default = __DIR__ . "/@layout.latte";
 		}
 	}
 
@@ -89,8 +91,12 @@ class LayoutProvider
 		if ($resolved AND !$resolved->overriding) {
 			$list[] = $resolved->path;
 		}
-
-		$list[] = $this->default ? $this->default : ($mode == self::MODE_MODAL ? __DIR__ . "/@modal.latte" : __DIR__ . "/@layout.latte");
+		$list[] = $this->default;
+		if ($mode == self::MODE_MODAL) {
+			foreach ($list as $key => $value) {
+				$list[$key] = str_replace("@layout.latte", "@modal.latte", $value);
+			}
+		}
 		return $list;
 	}
 
