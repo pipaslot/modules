@@ -1,2 +1,5 @@
+/demo/bower_components
+/demo/log
+/demo/temp
 composer.lock
 vendor/

@@ -1,0 +1,10 @@
+{snippet modalTitle}
+	{ifset $title}{$title} | {/ifset} NAYATA
+{/snippet}
+
+{snippet modalContent}
+	<div class="flashMessages">
+		<div n:foreach="$flashes as $flash" n:class="alert, 'alert-'.$flash->type">{$flash->message|noescape}</div>
+	</div>
+	{include content}
+{/snippet}

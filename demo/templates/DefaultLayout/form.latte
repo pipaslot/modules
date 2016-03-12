@@ -1,0 +1,22 @@
+
+{block styles}
+<style type="text/css">
+#snippet--content{
+	padding-top:50px;
+}
+</style>
+{/block}
+
+{block navbar}
+	{include "../navbar.latte"}
+{/block}
+
+{block #content}
+
+<h1>DefaultLayout - form</h1>
+
+<p>time: {date("H:i:s")}</p>
+<p>ajax: {if $presenter->isAjax()}ANO{else}NE{/if}</p>
+<p>This form sends nette flah message after submit.</p>
+
+{control testForm}

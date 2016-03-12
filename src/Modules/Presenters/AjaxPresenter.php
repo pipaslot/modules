@@ -4,6 +4,7 @@ namespace Pipas\Modules\Presenters;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\ITemplate;
 use Nette\Application\UI\Presenter;
+use Pipas\Modules\Presenters\Modal\ModalDialog;
 use Pipas\Modules\Templates\LayoutProvider;
 use Pipas\Modules\Templates\TemplateExtraParameters;
 
@@ -17,14 +18,23 @@ use Pipas\Modules\Templates\TemplateExtraParameters;
  */
 abstract class AjaxPresenter extends Presenter
 {
+	/** @var ModalDialog */
+	protected $modal;
 	/** @var LayoutProvider */
 	private $layoutProvider;
 
 	/** @var TemplateExtraParameters */
 	private $templateParameters;
 
+	public function __construct()
+	{
+		parent::__construct();
+		$this->modal = new ModalDialog($this);
+	}
+
 	/**
 	 * @param LayoutProvider $layoutProvider
+	 * @internal
 	 */
 	public function injectLayoutProvider(LayoutProvider $layoutProvider)
 	{
@@ -33,6 +43,7 @@ abstract class AjaxPresenter extends Presenter
 
 	/**
 	 * @param TemplateExtraParameters $templateParameters
+	 * @internal
 	 */
 	public function injectTemplateExtraParameters(TemplateExtraParameters $templateParameters)
 	{
@@ -42,14 +53,18 @@ abstract class AjaxPresenter extends Presenter
 	protected function beforeRender()
 	{
 		parent::beforeRender();
-		$this->template->ajaxLayoutPath = __DIR__ . "/../Templates/@layout.latte";
+		$this->template->ajaxLayoutPath = __DIR__ . "/../Templates/@" . ($this->modal->isRequested() ? "modal" : "layout") . ".latte";
 	}
 
 	protected function afterRender()
 	{
 		parent::afterRender();
-		//If is ajax mode and all components are valid, invalidate default pro prevent sending pure html instead of JSON response
-		if ($this->isAjax() AND !$this->isControlInvalid() AND $this->layout != false) {
+
+		if ($this->modal->isRequested() AND !$this->isControlInvalid()) {
+			$this->redrawControl("modalTitle");
+			$this->redrawControl("modalContent");
+		} //If is ajax mode and all components are valid, invalidate default pro prevent sending pure html instead of JSON response
+		else if ($this->isAjax() AND !$this->isControlInvalid() AND $this->layout !== false) {
 			$this->redrawControl("title");
 			$this->redrawControl("content");
 			$this->redrawControl("styles");
@@ -65,7 +80,7 @@ abstract class AjaxPresenter extends Presenter
 	{
 		$signal = $this->getSignal();
 
-		// If is not exist signal or is not Ajax
+		// If does not exist signal or is not Ajax request ,then redraw snippets
 		if ((!$signal OR empty($signal[0]) OR !$this->isAjax()) AND $this->layout != false) {
 			$this->redrawControl("title");
 			$this->redrawControl("content");
@@ -102,6 +117,7 @@ abstract class AjaxPresenter extends Presenter
 	 */
 	public function formatLayoutTemplateFiles()
 	{
-		return $this->layoutProvider->prepareLayouts(parent::formatLayoutTemplateFiles(), $this->name);
+		$mode = $this->modal->isRequested() ? LayoutProvider::MODE_MODAL : LayoutProvider::MODE_DOCUMENT;
+		return $this->layoutProvider->prepareLayouts(parent::formatLayoutTemplateFiles(), $this->name, $mode);
 	}
 }

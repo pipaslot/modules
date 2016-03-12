@@ -1,0 +1,9 @@
+{block #content}
+
+<h1>Home - form</h1>
+
+<p>time: {date("H:i:s")}</p>
+<p>ajax: {if $presenter->isAjax()}ANO{else}NE{/if}</p>
+<p>This form sends nette flah message after submit.</p>
+
+{control testForm}

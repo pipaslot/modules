@@ -9,9 +9,19 @@ namespace Pipas\Modules\Templates;
  */
 class LayoutProvider
 {
+	const MODE_DOCUMENT = 'document',
+		MODE_MODAL = 'modal';
 	protected $default;
 	/** @var LayoutDefinition[] */
 	protected $definitions = array();
+	/**
+	 * List of supported modes
+	 * @var array
+	 */
+	public static $modes = array(
+		self::MODE_DOCUMENT,
+		self::MODE_MODAL
+	);
 
 	/**
 	 * LayoutProvider constructor.
@@ -22,8 +32,6 @@ class LayoutProvider
 		if ($default !== null) {
 			if (!is_file($default)) throw new \OutOfRangeException("Layout file odes not exist: " . $default);
 			$this->default = $default;
-		} else {
-			$this->default = __DIR__ . "/@layout.latte";
 		}
 	}
 
@@ -32,11 +40,12 @@ class LayoutProvider
 	 * @param string $layout Path
 	 * @param array $rules
 	 * @param bool $override
+	 * @param string $mode
 	 * @return LayoutDefinition
 	 */
-	public function register($layout, $rules = array(), $override = false)
+	public function register($layout, $rules = array(), $override = false, $mode = self::MODE_DOCUMENT)
 	{
-		$definition = $this->addDefinition($layout, $override);
+		$definition = $this->addDefinition($layout, $override, $mode);
 		foreach ($rules as $rule) {
 			$definition->addRule($rule);
 		}
@@ -47,11 +56,12 @@ class LayoutProvider
 	 * Register new layout
 	 * @param $path
 	 * @param bool $overriding Override existing layout definitions
+	 * @param string $mode
 	 * @return LayoutDefinition
 	 */
-	public function addDefinition($path, $overriding = false)
+	public function addDefinition($path, $overriding = false, $mode = self::MODE_DOCUMENT)
 	{
-		$definition = new LayoutDefinition($path, $overriding);
+		$definition = new LayoutDefinition($path, $overriding, $mode);
 		$this->definitions[] = $definition;
 		return $definition;
 	}
@@ -59,13 +69,14 @@ class LayoutProvider
 	/**
 	 * @param array $layouts layouts path got from presenter method formatLayoutTemplateFiles()
 	 * @param string $name Presenter name
+	 * @param string $mode
 	 * @return string Path to layout
 	 */
-	public function prepareLayouts(array $layouts, $name)
+	public function prepareLayouts(array $layouts, $name, $mode = self::MODE_DOCUMENT)
 	{
 		$resolved = null;
 		foreach ($this->definitions as $definition) {
-			if ($definition->match($name)) {
+			if ($definition->getMode() == $mode AND $definition->match($name)) {
 				$resolved = $definition;
 				break;
 			}
@@ -78,7 +89,8 @@ class LayoutProvider
 		if ($resolved AND !$resolved->overriding) {
 			$list[] = $resolved->path;
 		}
-		$list[] = $this->default;
+
+		$list[] = $this->default ? $this->default : ($mode == self::MODE_MODAL ? __DIR__ . "/@modal.latte" : __DIR__ . "/@layout.latte");
 		return $list;
 	}
 

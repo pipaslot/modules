@@ -1,0 +1,29 @@
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+         <a class="navbar-brand" href="#">Module demo</a>
+         <ul class="nav navbar-nav">
+             <li class="dropdown">
+               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                    Default layout <span class="caret"></span>
+               </a>
+               <ul class="dropdown-menu">
+              <li><a n:href="DefaultLayout:default" class="no-ajax">Home no-ajax</a></li>
+              <li><a n:href="DefaultLayout:detail">Ajax request</a></li>
+              <li><a n:href="DefaultLayout:detail" class="modal-ajax">Modal</a></li>
+              <li><a n:href="DefaultLayout:form" class="modal-ajax">Modal form</a></li>
+               </ul>
+             </li>
+             <li class="dropdown">
+               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                    Middle layout <span class="caret"></span>
+               </a>
+               <ul class="dropdown-menu">
+		          <li><a n:href="MiddleLayout:default" class="no-ajax">Home no-ajax</a></li>
+		          <li><a n:href="MiddleLayout:detail">Ajax request</a></li>
+		          <li><a n:href="MiddleLayout:detail" class="modal-ajax">Modal</a></li>
+		          <li><a n:href="MiddleLayout:form" class="modal-ajax">Modal form</a></li>
+               </ul>
+             </li>
+           </ul>
+    </div>
+</nav>

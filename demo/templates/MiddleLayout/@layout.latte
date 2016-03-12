@@ -1,0 +1,19 @@
+{ifset $title}
+	{*use page title*}
+{else}
+	{var $title = "Default title"}
+{/ifset}
+
+{block styles}
+<style type="text/css">
+#snippet--content{
+	padding-top:50px;
+}
+</style>
+{/block}
+
+{block navbar}
+	{include "../navbar.latte"}
+{/block}
+
+{layout $ajaxLayoutPath}

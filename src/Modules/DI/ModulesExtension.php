@@ -70,7 +70,7 @@ class ModulesExtension extends CompilerExtension
 	 */
 	private function setupLayoutProvider(array $config)
 	{
-		$enabledKeys = array("path", "rules", "override");
+		$enabledKeys = array("path", "rules", "override", "mode");
 		// register LayoutProvider
 		$container = $this->getContainerBuilder();
 		$provider = $container->addDefinition($this->prefix('layoutProvider'))
@@ -84,7 +84,8 @@ class ModulesExtension extends CompilerExtension
 				if (!isset($layout['path'])) throw new \OutOfRangeException("Config section $this->name.layouts item must contain property 'path'.");
 				$rules = isset($layout['rules']) ? $layout['rules'] : array();
 				$override = isset($layout['override']) ? $layout['override'] : false;
-				$provider->addSetup("register", array($layout['path'], $rules, $override));
+				$mode = isset($layout['mode']) ? $layout['mode'] : LayoutProvider::MODE_DOCUMENT;
+				$provider->addSetup("register", array($layout['path'], $rules, $override, $mode));
 			}
 		}
 

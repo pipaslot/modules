@@ -13,6 +13,7 @@ require __DIR__ . '/../../bootstrap.php';
 
 class MediaTest extends TestCase
 {
+	protected $cwd;
 	/** @var MockInterface[] */
 	private $packages;
 
@@ -20,6 +21,7 @@ class MediaTest extends TestCase
 	{
 		parent::setUp();
 		$this->packages = array();
+		$this->cwd = __DIR__;
 	}
 
 	protected function tearDown()
@@ -38,6 +40,10 @@ class MediaTest extends TestCase
 		return $this->packages[] = Mockery::mock(PackageInterface::class);
 	}
 
+	private function createMedia()
+	{
+		return new Media($this->cwd);
+	}
 	/**************************************************************/
 
 	function test_noConfiguration()
@@ -49,7 +55,7 @@ class MediaTest extends TestCase
 		$packageMock3 = $this->createPackageMock();
 		$packageMock3->shouldReceive("getExtra")->andReturn(array("media" => array("directories" => null)));
 
-		$media = new Media();
+		$media = $this->createMedia();
 		$media->run($packageMock1);
 		$media->run($packageMock2, false);
 		$media->run($packageMock3, false);
@@ -67,7 +73,7 @@ class MediaTest extends TestCase
 					)
 				)));
 		Assert::exception(function () use ($packageMock) {
-			$media = new Media();
+			$media = $this->createMedia();
 			$media->run($packageMock, false);
 		}, \DomainException::class);
 	}
@@ -90,12 +96,12 @@ class MediaTest extends TestCase
 			->andReturn("package/name");
 
 		//passing
-		$media2 = new Media();
+		$media2 = $this->createMedia();
 		$media2->run($packageMock);
 		$media2->run($packageMock, false);
 		//failing
 		Assert::exception(function () use ($packageMock) {
-			$media = new Media();
+			$media = $this->createMedia();
 			$media->run($packageMock);
 			$media->run($packageMock);
 		}, \DomainException::class);
@@ -117,7 +123,7 @@ class MediaTest extends TestCase
 			->andReturn("package/name");
 
 		Assert::exception(function () use ($packageMock) {
-			$media = new Media();
+			$media = $this->createMedia();
 			$media->run($packageMock);
 		}, \OutOfRangeException::class, "Name must be corresponding to expression: a-zA-Z0-9_-");
 	}
@@ -138,9 +144,9 @@ class MediaTest extends TestCase
 			->andReturn("package/name");
 
 		Assert::exception(function () use ($packageMock) {
-			$media = new Media();
+			$media = $this->createMedia();
 			$media->run($packageMock);
-		}, \OutOfRangeException::class, "Media directory does not exist for expected path: " . Path::normalize(getcwd() . "/www/media"));
+		}, \OutOfRangeException::class, "Media directory does not exist for expected path: " . Path::normalize($this->cwd . "/www/media_modules"));
 	}
 
 	function test_noMediaSourceDirectoryExist_run_exception()
@@ -160,9 +166,9 @@ class MediaTest extends TestCase
 			->andReturn("package/name");
 
 		Assert::exception(function () use ($packageMock) {
-			$media = new Media();
+			$media = $this->createMedia();
 			$media->run($packageMock);
-		}, \OutOfRangeException::class, "Directory declared by relative path: 'missing' does not exist on absolute path " . Path::normalize(getcwd() . "/missing"));
+		}, \OutOfRangeException::class, "Directory declared by relative path: 'missing' does not exist on absolute path " . Path::normalize($this->cwd . "/missing"));
 	}
 
 	function test_noMediaSourceDirectoryExistOnMain_run_exception()
@@ -182,9 +188,9 @@ class MediaTest extends TestCase
 			->andReturn("package/name");
 
 		Assert::exception(function () use ($packageMock) {
-			$media = new Media();
+			$media = $this->createMedia();
 			$media->run($packageMock);
-		}, \OutOfRangeException::class, "Directory declared by relative path: 'missing' does not exist on absolute path " . Path::normalize(getcwd() . "/missing"));
+		}, \OutOfRangeException::class, "Directory declared by relative path: 'missing' does not exist on absolute path " . Path::normalize($this->cwd . "/missing"));
 	}
 
 	function test_run()
@@ -203,7 +209,7 @@ class MediaTest extends TestCase
 			->shouldReceive("getName")
 			->andReturn("package/name");
 
-		$media = new Media();
+		$media = $this->createMedia();
 		$media->run($packageMock);
 	}
 

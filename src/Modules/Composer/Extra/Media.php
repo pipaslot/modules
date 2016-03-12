@@ -35,6 +35,8 @@ class Media implements IExtra
 	protected $webConfigTarget = self::WEB_CONFIG;
 	/** @var string Source web config for modification */
 	protected $webConfigSource = self::WEB_CONFIG;
+	/** @var string current working directory */
+	protected $cwd;
 	/** @var string Relative path to www root from directory with composer.json */
 	private $wwwRoot;
 	/** @var string Path to media directory from URL */
@@ -46,6 +48,15 @@ class Media implements IExtra
 	const
 		WEB_CONFIG_START_TAG = "<!-- DynamicMediaDirectories -->",
 		WEB_CONFIG_END_TAG = "<!-- DynamicMediaDirectoriesEnd -->";
+
+	/**
+	 * Media constructor.
+	 * @param null $workingDirectory
+	 */
+	public function __construct($workingDirectory = null)
+	{
+		$this->cwd = $workingDirectory ? $workingDirectory : getcwd();
+	}
 
 
 	/**
@@ -71,9 +82,9 @@ class Media implements IExtra
 			if (!preg_match("/^[a-zA-Z0-9_-]+$/", $name)) throw new \OutOfRangeException("Name must be corresponding to expression: a-zA-Z0-9_-");
 			//generate create config
 			$relativePath = "/" . ($isMain ? "" : $vendorName . '/') . trim($path, '\\/');
-			$absolutePath = Path::normalize(getcwd() . $relativePath);
+			$absolutePath = Path::normalize($this->cwd . $relativePath);
 
-			$absoluteMediaPath = Path::normalize(getcwd() . '/' . trim($this->wwwRoot . '/' . $this->basePath, "\\/"));
+			$absoluteMediaPath = Path::normalize($this->cwd . '/' . trim($this->wwwRoot . '/' . $this->basePath, "\\/"));
 
 			if (!is_dir($absoluteMediaPath)) throw new \OutOfRangeException("Media directory does not exist for expected path: $absoluteMediaPath");
 			if (!is_dir($absolutePath)) throw new \OutOfRangeException("Directory declared by relative path: '$path' does not exist on absolute path $absolutePath");
@@ -121,8 +132,8 @@ class Media implements IExtra
 	 */
 	private function updateWebConfig()
 	{
-		$source = getcwd() . '/' . trim($this->webConfigSource, "\\/");
-		$target = getcwd() . '/' . trim($this->webConfigTarget, "\\/");
+		$source = $this->cwd . '/' . trim($this->webConfigSource, "\\/");
+		$target = $this->cwd . '/' . trim($this->webConfigTarget, "\\/");
 
 		if (!is_file($source)) {
 			return;

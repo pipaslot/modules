@@ -1,0 +1,24 @@
+extensions:
+	- Pipas\Modules\DI\ModulesExtension
+parameters:
+
+php:
+	date.timezone: Europe/Prague
+
+application:
+	mapping:
+		*: App\*Presenter
+session:
+	expiration: 14 days
+	debugger: true
+
+di:
+	debugger: false
+
+routing:
+    debugger: true
+    routes:
+    	'<presenter>/<action>[/<id>]': DefaultLayout:default
+
+services:
+	cacheStorage:		Nette\Caching\Storages\FileStorage(%tempDir%)

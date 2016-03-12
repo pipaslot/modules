@@ -19,17 +19,21 @@ class LayoutDefinition extends Object
 	private $overriding;
 	/** @var array Match rules */
 	private $rules = array();
+	/** @var */
+	private $mode;
 
 	/**
 	 * LayoutDefinition constructor.
 	 * @param string $path
 	 * @param bool $overriding Override existing layout definitions
+	 * @param $mode
 	 */
-	public function __construct($path, $overriding = false)
+	public function __construct($path, $overriding = false, $mode = LayoutProvider::MODE_DOCUMENT)
 	{
 		if (!is_file($path)) throw new \OutOfRangeException("Layout file odes not exist: " . $path);
 		$this->path = $path;
 		$this->overriding = (bool)$overriding;
+		$this->mode = $mode;
 	}
 
 	/**
@@ -113,4 +117,13 @@ class LayoutDefinition extends Object
 	{
 		return $this->overriding;
 	}
+
+	/**
+	 * @return string
+	 */
+	public function getMode()
+	{
+		return $this->mode;
+	}
+
 }
