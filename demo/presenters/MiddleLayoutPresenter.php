@@ -31,4 +31,9 @@ class MiddleLayoutPresenter extends AjaxPresenter
 
 		return $form;
 	}
+
+	public function handleRefresh()
+	{
+		$this->modal->refreshPage();
+	}
 }

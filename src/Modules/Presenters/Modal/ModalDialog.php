@@ -47,6 +47,21 @@ class ModalDialog
 		return false;
 	}
 
+	/**
+	 * Send refresh for page
+	 * @return bool
+	 * @throws \Nette\Application\AbortException
+	 */
+	public function refreshPage()
+	{
+		if ($this->isRequested()) {
+			$this->presenter->payload->refresh = true;
+			$this->presenter->sendPayload();
+			return true;
+		}
+		return false;
+	}
+
 	private function copyMessagesToPayload()
 	{
 		$id = $this->presenter->getParameterId('flash');
