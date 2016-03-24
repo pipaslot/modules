@@ -19,17 +19,23 @@ use Pipas\Modules\Templates\TemplateExtraParameters;
 abstract class AjaxPresenter extends Presenter
 {
 	/** @var ModalDialog */
-	protected $modal;
+	private $modal;
 	/** @var LayoutProvider */
 	private $layoutProvider;
 
 	/** @var TemplateExtraParameters */
 	private $templateParameters;
 
-	public function __construct()
+	/**
+	 * Modal dialog control
+	 * @return ModalDialog
+	 */
+	public function getModal()
 	{
-		parent::__construct();
-		$this->modal = new ModalDialog($this);
+		if (!$this->modal) {
+			$this->modal = new ModalDialog($this);
+		}
+		return $this->modal;
 	}
 
 	/**
@@ -53,14 +59,14 @@ abstract class AjaxPresenter extends Presenter
 	protected function beforeRender()
 	{
 		parent::beforeRender();
-		$this->template->ajaxLayoutPath = __DIR__ . "/../Templates/@" . ($this->modal->isRequested() ? "modal" : "layout") . ".latte";
+		$this->template->ajaxLayoutPath = __DIR__ . "/../Templates/@" . ($this->getModal()->isRequested() ? "modal" : "layout") . ".latte";
 	}
 
 	protected function afterRender()
 	{
 		parent::afterRender();
 
-		if ($this->modal->isRequested() AND !$this->isControlInvalid()) {
+		if ($this->getModal()->isRequested() AND !$this->isControlInvalid()) {
 			$this->redrawControl("modalTitle");
 			$this->redrawControl("modalContent");
 		} //If is ajax mode and all components are valid, invalidate default pro prevent sending pure html instead of JSON response
@@ -117,7 +123,7 @@ abstract class AjaxPresenter extends Presenter
 	 */
 	public function formatLayoutTemplateFiles()
 	{
-		$mode = $this->modal->isRequested() ? LayoutProvider::MODE_MODAL : LayoutProvider::MODE_DOCUMENT;
+		$mode = $this->getModal()->isRequested() ? LayoutProvider::MODE_MODAL : LayoutProvider::MODE_DOCUMENT;
 		return $this->layoutProvider->prepareLayouts(parent::formatLayoutTemplateFiles(), $this->name, $mode);
 	}
 }
