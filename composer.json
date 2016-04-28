@@ -18,7 +18,7 @@
     "nette/di": "~2.3",
     "nette/utils": "~2.3",
     "php": ">=5.5.0",
-    "composer/composer": "1.0.0-alpha11",
+    "composer/composer": "^1.0",
     "nette/application": "^2.3",
     "pipaslot/utils": "^1.1"
   },
