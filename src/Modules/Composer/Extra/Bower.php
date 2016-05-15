@@ -2,22 +2,12 @@
 namespace Pipas\Modules\Composer\Extra;
 
 use Composer\Package\PackageInterface;
+use Pipas\Modules\Composer\Extra\Config\BowerConfig;
 
 /**
  * Call the installation dependencies of front-end bower tool. Using extra section of composer config file.
  *
- * Example of using:
- * "extra":{
- *    "bower":{
- *        "files": [
- *            "relative/path/to/bower.json"
- *        ],
- *        "dependencies": [
- *            "bower-dependency": "~1.0.0",
- *        ]
- *    }
- * }
- *
+ * @see BowerConfig
  * @author Petr Štipek <p.stipek@email.cz>
  */
 class Bower implements IExtra
@@ -48,24 +38,22 @@ class Bower implements IExtra
 	function run(PackageInterface $package, $isMain = true)
 	{
 		$extra = $package->getExtra();
-		if (!isset($extra['bower'])) return;
+		$config = new BowerConfig($extra);
 
-		if (isset($extra['bower']['dependencies']) AND is_array($extra['bower']['dependencies'])) {
-			foreach ($extra['bower']['dependencies'] as $package => $version) {
-				$this->installPackage($package, $version);
-			}
+		foreach ($config->getDependencies() as $package => $version) {
+			$this->installPackage($package, $version);
 		}
-		if (isset($extra['bower']['files']) AND is_array($extra['bower']['files'])) {
-			foreach ($extra['bower']['files'] as $file) {
-				$path = getcwd() . "/" . $file;
-				if (is_file($path)) {
-					$bower = json_decode(file_get_contents($path));
-					if (isset($bower->dependencies)) {
-						foreach ($bower->dependencies as $package => $version) {
-							$this->installPackage($package, $version);
-						}
+		foreach ($config->getFiles() as $file) {
+			$path = getcwd() . "/" . $file;
+			if (is_file($path)) {
+				$bower = json_decode(file_get_contents($path));
+				if (isset($bower->dependencies)) {
+					foreach ($bower->dependencies as $package => $version) {
+						$this->installPackage($package, $version);
 					}
-				} elseif ($isMain) throw new \OutOfRangeException("File $file defined in composer section extra.bower.files does not exist on path: $path");
+				}
+			} elseif ($isMain) {
+				throw new \OutOfRangeException("File $file defined in composer section extra.bower.files does not exist on path: $path");
 			}
 		}
 	}

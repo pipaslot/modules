@@ -2,30 +2,16 @@
 namespace Pipas\Modules\Composer\Extra;
 
 use Composer\Package\PackageInterface;
+use Pipas\Modules\Composer\Extra\Config\MediaConfig;
 use Pipas\Utils\Path;
 
 /**
  * Tool accessing private directories with front-end libraries of modules
  *
- * Example of using:
- * "media": {
- *    "web.config": {
- *        "source": "relative path",
- *        "target: "relative path",
- *    }
- *    "www-root": "temp",    //relative path to www-root
- *    "base-path": "media",    //path from www-root to media directory
- *    "directories":{
- *        "name-under-public-media-directory": "relative/path/to/private/media/directory"
- *    },
- *    "ignored":[
- *        "ignored-media-directory-of-parent-modules"
- *    ]
- * }
- *
  * For Unix will be created symlink to private directory.
  * For IIS will be updated web.config file and configuration will be passed between defined comments <!-- DynamicMediaDirectories --> and <!-- DynamicMediaDirectoriesEnd -->
  *
+ * @see MediaConfig
  * @author Petr Štipek <p.stipek@email.cz>
  */
 class Media implements IExtra
@@ -67,16 +53,12 @@ class Media implements IExtra
 	 */
 	function run(PackageInterface $package, $isMain = true)
 	{
-		$extra = $package->getExtra();
-		$this->initPaths($extra, $isMain);
-		if (!isset($extra['media']) OR !isset($extra['media']['directories']) OR !is_array($extra['media']['directories'])) return;
-		if ($isMain and isset($extra['media']['web.config'])) {
-			$this->webConfigTarget = isset($extra['media']['web.config']['target']) ? $extra['media']['web.config']['target'] : self::WEB_CONFIG;
-			$this->webConfigSource = isset($extra['media']['web.config']['source']) ? $extra['media']['web.config']['source'] : $this->webConfigTarget;
-		}
+		$config = new MediaConfig($package->getExtra());
+		$this->initPaths($config, $isMain);
+		if (count($config->getDirectories()) == 0) return;
 
 		$vendorName = trim("vendor/" . $package->getName(), '\\/');
-		foreach ($extra['media']['directories'] as $name => $path) {
+		foreach ($config->getDirectories() as $name => $path) {
 			if (in_array($name, $this->ignored)) continue;
 
 			if (!preg_match("/^[a-zA-Z0-9_-]+$/", $name)) throw new \OutOfRangeException("Name must be corresponding to expression: a-zA-Z0-9_-");
@@ -163,10 +145,10 @@ class Media implements IExtra
 
 	/**
 	 * Initialize paths from main package extra parameters
-	 * @param $extra
+	 * @param MediaConfig $config
 	 * @param $isMain
 	 */
-	private function initPaths($extra, $isMain)
+	private function initPaths($config, $isMain)
 	{
 		if ($this->wwwRoot AND $this->basePath AND $isMain) throw new \DomainException("Can not run for package marked as main twice.");
 		if ($this->wwwRoot AND $this->basePath) return;

@@ -2,24 +2,13 @@
 namespace Pipas\Modules\Composer\Extra;
 
 use Composer\Package\PackageInterface;
+use Pipas\Modules\Composer\Extra\Config\DirectoryConfig;
 use Pipas\Utils\Path;
 
 /**
  * Directory management and security against URL access
  *
- * Example of using:
- * "directory": {
- *    "secure": [
- *        "relative-path"
- *    ],
- *    "create": [
- *        "relative-path"
- *    ],
- *    "empty": [
- *        "relative-path"
- *    ]
- * }
- *
+ * @see DirectoryConfig
  * @author Petr Štipek <p.stipek@email.cz>
  */
 class Directory implements IExtra
@@ -51,40 +40,33 @@ class Directory implements IExtra
 	function run(PackageInterface $package, $isMain = true)
 	{
 		if (!$isMain) throw new \DomainException("Directory extra extension is enabled only for main packages");
-		$extra = $package->getExtra();
 
-		if (isset($extra['directory'])) {
-			if (isset($extra['directory']['empty']) AND is_array($extra['directory']['empty'])) {
-				$this->runEmpty($extra['directory']['empty']);
-			}
-			if (isset($extra['directory']['create']) AND is_array($extra['directory']['create'])) {
-				$this->runCreate($extra['directory']['create']);
-			}
-			if (isset($extra['directory']['secure']) AND is_array($extra['directory']['secure'])) {
-				$this->runSecure($extra['directory']['secure']);
-			}
-		}
+		$config = new DirectoryConfig($package->getExtra());
+
+		$this->runEmpty($config);
+		$this->runCreate($config);
+		$this->runSecure($config);
 	}
 
-	private function runEmpty(array $directories)
+	private function runEmpty(DirectoryConfig $config)
 	{
-		foreach ($directories as $directory) {
+		foreach ($config->getEmpty() as $directory) {
 			if (!is_dir($directory)) continue;
 			Path::emptyDirectory($directory);
 		}
 	}
 
-	private function runCreate(array $directories)
+	private function runCreate(DirectoryConfig $config)
 	{
-		foreach ($directories as $directory) {
+		foreach ($config->getCreate() as $directory) {
 			if (is_dir($directory)) continue;
 			mkdir($directory);
 		}
 	}
 
-	private function runSecure(array $directories)
+	private function runSecure(DirectoryConfig $config)
 	{
-		foreach ($directories as $directory) {
+		foreach ($config->getSecure() as $directory) {
 			if (!is_dir($directory)) continue;
 			$path = $this->getPath($directory);
 			$config = $path . "/web.config";
