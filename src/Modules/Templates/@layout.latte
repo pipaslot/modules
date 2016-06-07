@@ -9,10 +9,7 @@
 		<title n:snippet="title">{ifset $title}{$title}{/ifset}{if isset($projectName) AND isset($title)} | {/if}{ifset $projectName}{$projectName}{/ifset}</title>
 
 		<link rel="shortcut icon" href="{$basePath}/favicon.ico">
-        <link rel="stylesheet" href="{$bowerPath}/bootstrap/dist/css/bootstrap.min.css">
-        <link rel="stylesheet" href="{$bowerPath}/bootstrap/dist/css/bootstrap-theme.min.css">
-        <link rel="stylesheet" href="{$bowerPath}/pipaslot-frontend/dist/nette.min.css">
-        <link rel="stylesheet" href="{$bowerPath}/pipaslot-frontend/dist/pipas.min.css">
+        <link rel="stylesheet" href="{$basePath}/dist/modules.min.css">
     </head>
 	<body>
 		{snippet styles}
@@ -43,16 +40,11 @@
 				{include footer}
 			{/ifset}
 		</div>
-		<script type="text/javascript" src="{$bowerPath}/jquery/dist/jquery.min.js"></script>
-		<script type="text/javascript" src="{$bowerPath}/bootstrap/dist/js/bootstrap.min.js"></script>
-	    <script type="text/javascript" src="{$bowerPath}/nette-live-form-validation/live-form-validation.js"></script>
-	    <script type="text/javascript" src="{$bowerPath}/nette.ajax.js/nette.ajax.js"></script>
-	    <script type="text/javascript" src="{$bowerPath}/pipaslot-frontend/dist/pipas.min.js"></script>
-	    <script type="text/javascript" src="{$bowerPath}/pipaslot-frontend/dist/nette-extensions.min.js"></script>
+		<script type="text/javascript" src="{$basePath}/dist/modules.min.js"></script>
 		{snippet scripts}
 	    {block scripts}
 		{/block}
 		{/snippet}
-	    <script type="text/javascript" src="{$bowerPath}/pipaslot-frontend/dist/nette-init.min.js"></script>
+		<script type="text/javascript" src="{$basePath}/dist/modules-init.min.js"></script>
 	</body>
 </html>

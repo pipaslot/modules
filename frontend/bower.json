@@ -1,0 +1,22 @@
+{
+  "name": "cedra",
+  "authors": [
+    "Petr Štipek <p.stipek@email.cz>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "pipaslot-frontend": "~1.*",
+    "nette-live-form-validation": "~1.*"
+  }
+}

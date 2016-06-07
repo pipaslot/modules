@@ -44,37 +44,28 @@
   "extra": {
     "directory": {
       "create": [
-        "demo/temp"
+        "demo/log",
+        "demo/temp",
+        "demo/dist",
+        "frontend/temp"
       ],
       "clean": [
-        "demo/temp"
-      ]
-    },
-    "bower": {
-      "files": [
-      ],
-      "dependencies": {
-        "pipaslot-frontend": "~1.*",
-        "nette-live-form-validation": "~1.*"
-      }
-    },
-    "grunt": {
-    },
-    "media": {
-      "www-root": "demo",
-      "base-path": "media",
-      "directories": {
-      },
-      "ignored": [
+        "demo/temp",
+        "frontend/temp"
       ]
     }
   },
   "scripts": {
     "post-install-cmd": [
-      "Pipas\\Modules\\Composer\\Extra::run"
+      "Pipas\\Modules\\Composer\\Extra\\Directory::runFromComposer",
+      "cd frontend && npm install",
+      "cd frontend && npm install grunt",
+      "cd frontend && npm install bower",
+      "cd frontend && bower install",
+      "cd frontend && grunt"
     ],
     "post-update-cmd": [
-      "Pipas\\Modules\\Composer\\Extra::run"
+      "Pipas\\Modules\\Composer\\Extra\\Directory::runFromComposer"
     ]
   }
 }

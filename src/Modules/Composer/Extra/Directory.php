@@ -2,6 +2,7 @@
 namespace Pipas\Modules\Composer\Extra;
 
 use Composer\Package\PackageInterface;
+use Composer\Script\Event;
 use Pipas\Utils\Path;
 
 /**
@@ -41,6 +42,16 @@ class Directory implements IExtra
 	</system.webServer>
 </configuration>";
 	private $htaccessDeny = "Order Deny,Allow\nDeny from all";
+
+	/**
+	 * Run Directory extra from composer
+	 * @param Event $event
+	 */
+	public static function runFromComposer(Event $event)
+	{
+		$dir = new self();
+		$dir->run($event->getComposer()->getPackage());
+	}
 
 	/**
 	 * Prepare directories order configuration

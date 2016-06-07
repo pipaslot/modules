@@ -27,6 +27,8 @@ use Pipas\Utils\Path;
  * For IIS will be updated web.config file and configuration will be passed between defined comments <!-- DynamicMediaDirectories --> and <!-- DynamicMediaDirectoriesEnd -->
  *
  * @author Petr Štipek <p.stipek@email.cz>
+ * 
+ * @deprecated 
  */
 class Media implements IExtra
 {

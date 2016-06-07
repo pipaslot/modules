@@ -1,5 +1,7 @@
-/demo/bower_components
 /demo/log
 /demo/temp
 composer.lock
 vendor/
+/frontend/bower_components/
+/frontend/node_modules/
+/demo/dist/

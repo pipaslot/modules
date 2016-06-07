@@ -15,6 +15,8 @@ use Composer\Package\PackageInterface;
  * }
  *
  * @author Petr Štipek <p.stipek@email.cz>
+ * 
+ * @deprecated
  */
 class Grunt implements IExtra
 {
