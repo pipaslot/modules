@@ -1,6 +1,6 @@
-const distDir = '../demo/dist';
-const tempDir = './temp';
 module.exports = function (grunt) {
+    var distDir = grunt.option('distDir') || '../demo/dist';
+    var tempDir = grunt.option('tempDir') || './temp';
     grunt.initConfig({
         concat: {
             commonCSS: {
@@ -11,7 +11,7 @@ module.exports = function (grunt) {
                     'bower_components/pipaslot-frontend/dist/nette.min.css',
                     'bower_components/pipaslot-frontend/dist/pipas.min.css'
                 ],
-                dest: tempDir+ '/modules.css'
+                dest: tempDir + '/modules.css'
             },
             commonJS: {
                 src: [
@@ -22,7 +22,7 @@ module.exports = function (grunt) {
                     'bower_components/pipaslot-frontend/dist/pipas.min.js',
                     'bower_components/pipaslot-frontend/dist/nette-extensions.min.js'
                 ],
-                dest: tempDir+ '/modules.js'
+                dest: tempDir + '/modules.js'
             },
             initJS: {
                 src: [
@@ -68,7 +68,7 @@ module.exports = function (grunt) {
             },
             libs: {
                 expand: true,
-                src: tempDir+'/*.min.*',
+                src: tempDir + '/*.min.*',
                 dest: distDir + '/',
                 flatten: true
             }
