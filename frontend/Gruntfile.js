@@ -2,6 +2,22 @@ module.exports = function (grunt) {
     var distDir = grunt.option('distDir') || '../demo/dist';
     var tempDir = grunt.option('tempDir') || './temp';
     grunt.initConfig({
+        "bower-install-simple": {
+            options: {
+                color: true,
+                directory: "bower_components"
+            },
+            "prod": {
+                options: {
+                    production: true
+                }
+            },
+            "dev": {
+                options: {
+                    production: false
+                }
+            }
+        },
         concat: {
             commonCSS: {
                 src: [
@@ -85,6 +101,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
-    grunt.registerTask('default', ['concat', 'uglify', 'cssmin', 'copy']);
+    grunt.loadNpmTasks("grunt-bower-install-simple");
+    grunt.registerTask('default', ['bower-install-simple', 'concat', 'uglify', 'cssmin', 'copy']);
 
 };

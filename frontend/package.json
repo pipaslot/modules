@@ -2,9 +2,8 @@
   "name": "pipaslot-modules",
   "description": "",
   "main": "Gruntfile.js",
-  "version": "1.0.1",
-  "scripts": {
-  },
+  "version": "1.0.2",
+  "scripts": {},
   "keywords": [],
   "author": "Petr Štipek",
   "license": "MIT",
@@ -16,5 +15,6 @@
     "grunt-contrib-copy": "^1.0.0"
   },
   "devDependencies": {
+    "grunt-bower-install-simple": "^1.2.3"
   }
 }
