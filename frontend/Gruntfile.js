@@ -1,6 +1,12 @@
 module.exports = function (grunt) {
     var distDir = grunt.option('distDir') || '../demo/dist';
     var tempDir = grunt.option('tempDir') || './temp';
+    //if is setup, it indicates that this grunt file is called from another frunt and is expected to change path to directories. Root is moved two directories upper
+    var asModule = grunt.option('asSubGrunt') || false;
+    if (asModule) {
+        distDir = '../../' + distDir;
+        tempDir = '../../' + tempDir;
+    }
     grunt.initConfig({
         "bower-install-simple": {
             options: {
