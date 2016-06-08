@@ -6,3 +6,5 @@
 /frontend/temp/
 vendor/
 composer.lock
+/tests/php.ini
+/tests/temp/

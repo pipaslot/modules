@@ -47,11 +47,13 @@
         "demo/log",
         "demo/temp",
         "demo/dist",
-        "frontend/temp"
+        "frontend/temp",
+        "tests/temp"
       ],
       "clean": [
         "demo/temp",
-        "frontend/temp"
+        "frontend/temp",
+        "tests/temp"
       ]
     }
   },

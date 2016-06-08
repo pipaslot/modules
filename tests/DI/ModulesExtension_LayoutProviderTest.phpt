@@ -22,7 +22,7 @@ class ModulesExtension_LayoutProviderTest extends TestCase
 	{
 		parent::setUp();
 		$this->configurator = new Nette\Configurator();
-		$this->configurator->setTempDirectory(__DIR__ . "/../../temp");
+		$this->configurator->setTempDirectory(TEMP_DIR);
 		self::$errors = null;
 	}
 

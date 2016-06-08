@@ -15,16 +15,15 @@ use Pipas\Modules\Templates\TemplateExtraParameters;
  * - styles     - Defined block #styles and snippet "styles" placed into HTML body
  * - scripts - Defined block #scripts and snippet "scripts" placed into HTML body
  * @author Petr Štipek <p.stipek@email.cz>
+ * @property ModalDialog $modal
  */
 abstract class AjaxPresenter extends Presenter
 {
 	/** @var ModalDialog */
 	private $modal;
+	
 	/** @var LayoutProvider */
 	private $layoutProvider;
-
-	/** @var TemplateExtraParameters */
-	private $templateParameters;
 
 	/**
 	 * Modal dialog control
@@ -47,19 +46,11 @@ abstract class AjaxPresenter extends Presenter
 		$this->layoutProvider = $layoutProvider;
 	}
 
-	/**
-	 * @param TemplateExtraParameters $templateParameters
-	 * @internal
-	 */
-	public function injectTemplateExtraParameters(TemplateExtraParameters $templateParameters)
-	{
-		$this->templateParameters = $templateParameters;
-	}
-
 	protected function beforeRender()
 	{
 		parent::beforeRender();
 		$this->template->ajaxLayoutPath = __DIR__ . "/../Templates/@" . ($this->getModal()->isRequested() ? "modal" : "layout") . ".latte";
+		$this->template->isDebugMode = $this->context->parameters['debugMode'];
 	}
 
 	protected function afterRender()
@@ -103,19 +94,6 @@ abstract class AjaxPresenter extends Presenter
 				throw $e;
 		}
 	}
-
-	/**
-	 * @return ITemplate
-	 */
-	protected function createTemplate()
-	{
-		$template = parent::createTemplate();
-		$template->bowerPath = $this->templateParameters->getBowerPath($template->basePath);
-		$template->mediaPath = $this->templateParameters->getMediaPath($template->basePath);
-		$template->modulePath = $this->templateParameters->getModulePath($template->basePath);
-		return $template;
-	}
-
 
 	/**
 	 * Search default layouts of AjaxPresenter

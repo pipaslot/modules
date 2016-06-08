@@ -9,7 +9,7 @@
 		<title n:snippet="title">{ifset $title}{$title}{/ifset}{if isset($projectName) AND isset($title)} | {/if}{ifset $projectName}{$projectName}{/ifset}</title>
 
 		<link rel="shortcut icon" href="{$basePath}/favicon.ico">
-        <link rel="stylesheet" href="{$basePath}/dist/modules.min.css">
+        <link rel="stylesheet" href="{$basePath}/dist/css/modules{if !$isDebugMode}.min{/if}.css">
     </head>
 	<body>
 		{snippet styles}
@@ -40,11 +40,11 @@
 				{include footer}
 			{/ifset}
 		</div>
-		<script type="text/javascript" src="{$basePath}/dist/modules.min.js"></script>
+		<script type="text/javascript" src="{$basePath}/dist/js/modules{if !$isDebugMode}.min{/if}.js"></script>
 		{snippet scripts}
 	    {block scripts}
 		{/block}
 		{/snippet}
-		<script type="text/javascript" src="{$basePath}/dist/modules-init.min.js"></script>
+		<script type="text/javascript" src="{$basePath}/dist/js/modules-init{if !$isDebugMode}.min{/if}.js"></script>
 	</body>
 </html>

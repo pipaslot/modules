@@ -11,7 +11,7 @@ module.exports = function (grunt) {
                     'bower_components/pipaslot-frontend/dist/nette.min.css',
                     'bower_components/pipaslot-frontend/dist/pipas.min.css'
                 ],
-                dest: tempDir + '/modules.css'
+                dest: tempDir + '/css/modules.css'
             },
             commonJS: {
                 src: [
@@ -22,13 +22,13 @@ module.exports = function (grunt) {
                     'bower_components/pipaslot-frontend/dist/pipas.min.js',
                     'bower_components/pipaslot-frontend/dist/nette-extensions.min.js'
                 ],
-                dest: tempDir + '/modules.js'
+                dest: tempDir + '/js/modules.js'
             },
             initJS: {
                 src: [
                     'bower_components/pipaslot-frontend/dist/nette-init.min.js'
                 ],
-                dest: tempDir + '/modules-init.js'
+                dest: tempDir + '/js/modules-init.js'
             }
         },
         uglify: {
@@ -60,16 +60,16 @@ module.exports = function (grunt) {
                 dest: distDir + '/fonts/',
                 flatten: true
             },
-            cssImages: {
+            css: {
                 expand: true,
-                src: 'css/images/*',
-                dest: distDir + '/images/',
+                src: tempDir + '/css/*',
+                dest: distDir + '/css',
                 flatten: true
             },
-            libs: {
+            js: {
                 expand: true,
-                src: tempDir + '/*.min.*',
-                dest: distDir + '/',
+                src: tempDir + '/js/*',
+                dest: distDir + '/js',
                 flatten: true
             }
 
