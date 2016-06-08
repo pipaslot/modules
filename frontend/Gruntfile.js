@@ -60,6 +60,12 @@ module.exports = function (grunt) {
                 dest: distDir + '/fonts/',
                 flatten: true
             },
+            fontGlyphIcon: {
+                expand: true,
+                src: 'bower_components/bootstrap/fonts/*',
+                dest: distDir + '/fonts/',
+                flatten: true
+            },
             css: {
                 expand: true,
                 src: tempDir + '/css/*',
