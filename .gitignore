@@ -1,9 +1,6 @@
 /demo/dist
 /demo/log
 /demo/temp
-/frontend/bower_components/
-/frontend/node_modules/
-/frontend/temp/
 vendor/
 composer.lock
 /tests/php.ini
