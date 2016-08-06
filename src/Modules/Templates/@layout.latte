@@ -6,7 +6,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="author" content="Petr Štipek, p.stipek@email.cz">
 
-		<title n:snippet="title">{ifset $title}{$title}{/ifset}{if isset($projectName) AND isset($title)} | {/if}{ifset $projectName}{$projectName}{/ifset}</title>
+		<title n:snippet="title">{ifset $title}{$title}{/ifset}{if isset($projectName) && isset($title)} | {/if}{ifset $projectName}{$projectName}{/ifset}</title>
 
 		<link rel="shortcut icon" href="{$basePath}/favicon.ico">
         <link rel="stylesheet" href="{$basePath}/dist/css/modules{if !$isDebugMode}.min{/if}.css">
