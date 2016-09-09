@@ -2,11 +2,11 @@
 namespace Pipas\Modules\Presenters;
 
 use Nette\Application\BadRequestException;
-use Nette\Application\UI\ITemplate;
 use Nette\Application\UI\Presenter;
 use Pipas\Modules\Presenters\Modal\ModalDialog;
+use Pipas\Modules\Results\Message;
+use Pipas\Modules\Results\UIResult;
 use Pipas\Modules\Templates\LayoutProvider;
-use Pipas\Modules\Templates\TemplateExtraParameters;
 
 /**
  * Providing AJAX operations and default snippet invalidation.
@@ -103,5 +103,23 @@ abstract class AjaxPresenter extends Presenter
 	{
 		$mode = $this->getModal()->isRequested() ? LayoutProvider::MODE_MODAL : LayoutProvider::MODE_DOCUMENT;
 		return $this->layoutProvider->prepareLayouts(parent::formatLayoutTemplateFiles(), $this->name, $mode);
+	}
+
+	/**
+	 * Presents UI result messages as presenter flash message
+	 * @param UIResult $result
+	 */
+	protected function processUiResult(UIResult $result)
+	{
+		$levelToType = array(
+			Message::LEVEL_SUCCESS => 'success',
+			Message::LEVEL_INFO => 'info',
+			Message::LEVEL_WARNING => 'warning',
+			Message::LEVEL_ERROR => 'error'
+		);
+		foreach ($result->getMessages() as $message) {
+			$type = $levelToType[$message->getLevel()];
+			parent::flashMessage(($message->getRate() > 1 ? $message->getRate() . 'x: ' : '') . $message->getText(), $type);
+		}
 	}
 }

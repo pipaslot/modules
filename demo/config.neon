@@ -18,7 +18,7 @@ di:
 routing:
     debugger: true
     routes:
-    	'<presenter>/<action>[/<id>]': DefaultLayout:default
+    	'<presenter>/<action>[/<id>]': Home:default
 
 services:
 	cacheStorage:		Nette\Caching\Storages\FileStorage(%tempDir%)
