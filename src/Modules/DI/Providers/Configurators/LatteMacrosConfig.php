@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Pipas\Modules\Configurators;
+namespace Pipas\Modules\DI\Providers\Configurators;
 
 /**
  * @author Petr Štipek <p.stipek@email.cz>

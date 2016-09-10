@@ -1,6 +1,6 @@
 <?php
 
-namespace Pipas\Modules\Providers;
+namespace Pipas\Modules\DI\Providers;
 
 /**
  * @author Petr Štipek <p.stipek@email.cz>

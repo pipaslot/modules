@@ -9,14 +9,14 @@ use Nette\DI\Statement;
 use Nette\FileNotFoundException;
 use Nette\Utils\AssertionException;
 use Nette\Utils\Validators;
-use Pipas\Modules\Configurators\LatteMacrosConfig;
-use Pipas\Modules\Configurators\ParametersConfig;
-use Pipas\Modules\Configurators\PresenterMappingConfig;
-use Pipas\Modules\Providers\ILatteMacrosProvider;
-use Pipas\Modules\Providers\INeonProvider;
-use Pipas\Modules\Providers\IParametersProvider;
-use Pipas\Modules\Providers\IPresenterMappingProvider;
-use Pipas\Modules\Providers\IRouterProvider;
+use Pipas\Modules\DI\Providers\Configurators\LatteMacrosConfig;
+use Pipas\Modules\DI\Providers\Configurators\ParametersConfig;
+use Pipas\Modules\DI\Providers\Configurators\PresenterMappingConfig;
+use Pipas\Modules\DI\Providers\ILatteMacrosProvider;
+use Pipas\Modules\DI\Providers\INeonProvider;
+use Pipas\Modules\DI\Providers\IParametersProvider;
+use Pipas\Modules\DI\Providers\IPresenterMappingProvider;
+use Pipas\Modules\DI\Providers\IRouterProvider;
 use Pipas\Modules\Templates\LayoutProvider;
 
 /**
@@ -27,10 +27,7 @@ class ModulesExtension extends CompilerExtension
 {
 	const TAG_ROUTER = 'pipas.modules.router';
 	public $defaults = array(
-		"layouts" => array(),
-		"bowerDir" => "bower_components",
-		"mediaDir" => "media",
-		"moduleDir" => "media_modules"
+		"layouts" => array()
 	);
 
 	public function loadConfiguration()

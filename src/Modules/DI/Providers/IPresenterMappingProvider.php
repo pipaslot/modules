@@ -1,7 +1,7 @@
 <?php
 
-namespace Pipas\Modules\Providers;
-use Pipas\Modules\Configurators\IPresenterMappingConfig;
+namespace Pipas\Modules\DI\Providers;
+use Pipas\Modules\DI\Providers\Configurators\IPresenterMappingConfig;
 
 /**
  * @author Petr Štipek <p.stipek@email.cz>

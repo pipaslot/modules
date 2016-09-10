@@ -1,6 +1,6 @@
 <?php
 
-namespace Pipas\Modules\Providers;
+namespace Pipas\Modules\DI\Providers;
 
 use Nette\Application\Routers\RouteList;
 

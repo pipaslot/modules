@@ -1,6 +1,6 @@
 <?php
 
-namespace Pipas\Modules\Configurators;
+namespace Pipas\Modules\DI\Providers\Configurators;
 
 use Nette\Application\IRouter;
 

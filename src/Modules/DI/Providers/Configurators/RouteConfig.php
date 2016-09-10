@@ -1,8 +1,11 @@
 <?php
 
 
-namespace Pipas\Modules\Configurators;
+namespace Pipas\Modules\DI\Providers\Configurators;
 
+use Nette\Application\Routers\RouteList;
+use Nette\Application\Routers\Route;
+use Nette\Application\IRouter;
 /**
  * @author Petr Štipek <p.stipek@email.cz>
  */
