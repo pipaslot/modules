@@ -3,6 +3,8 @@ namespace Pipas\Modules\Presenters;
 
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Presenter;
+use Nette\Http\IResponse;
+use Nette\Security\IAuthorizator;
 use Pipas\Modules\Presenters\Modal\ModalDialog;
 use Pipas\Modules\Results\Message;
 use Pipas\Modules\Results\UIResult;
@@ -21,9 +23,15 @@ abstract class AjaxPresenter extends Presenter
 {
 	/** @var ModalDialog */
 	private $modal;
-	
+
 	/** @var LayoutProvider */
 	private $layoutProvider;
+
+	/** @var callable[]  function (AjaxPresenter $presenter); */
+	public $onAccessDenied;
+
+	/** @var callable[]  function (AjaxPresenter $presenter, $resource, $permission); */
+	public $onPermissionDenied;
 
 	/**
 	 * Modal dialog control
@@ -90,8 +98,9 @@ abstract class AjaxPresenter extends Presenter
 			if ($this->isAjax()) {
 				$this->flashMessage($e->getMessage(), 'error');
 				$this->sendPayload();
-			} else
+			} else {
 				throw $e;
+			}
 		}
 	}
 
@@ -120,6 +129,33 @@ abstract class AjaxPresenter extends Presenter
 		foreach ($result->getMessages() as $message) {
 			$type = $levelToType[$message->getLevel()];
 			parent::flashMessage(($message->getRate() > 1 ? $message->getRate() . 'x: ' : '') . $message->getText(), $type);
+		}
+	}
+
+	/********************************** Security helpers **********************************/
+	/**
+	 * Verify if user is logged in, if not onAccessDenied event is invoked and error is thrown
+	 * @return void
+	 */
+	protected function requireLoggedUser()
+	{
+		if (!$this->user->isLoggedIn()) {
+			$this->onAccessDenied($this);
+			$this->error("Access enabled only for logged users.", IResponse::S401_UNAUTHORIZED);
+		}
+	}
+
+	/**
+	 * Verify if user has permission, if not onPermissionDenied event is invoked and error is thrown
+	 * @param null $resource
+	 * @param null $privilege
+	 * @return void
+	 */
+	protected function requirePermission($resource = IAuthorizator::ALL, $privilege = IAuthorizator::ALL)
+	{
+		if (!$this->user->isAllowed($resource, $privilege)) {
+			$this->onPermissionDenied($this, $resource, $privilege);
+			$this->error("Access enabled only for logged users.", IResponse::S403_FORBIDDEN);
 		}
 	}
 }
